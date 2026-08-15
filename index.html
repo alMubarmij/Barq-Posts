@@ -1,18 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/logo.svg" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>منشورات برقية — your Telegram, archived</title>
+  <title>منشورات برقية — أرشيفك عبر تيليغرام</title>
   <script>
-    // Restore saved theme + language before first paint to avoid flashing.
+    // Restore saved language + theme before first paint to avoid flashing.
+    // Arabic is the default language; English is an explicit opt-out.
     (function () {
       try {
         var lang = localStorage.getItem("barq-lang");
-        if (lang === "ar") {
+        if (lang === "en") {
+          document.documentElement.lang = "en";
+          document.documentElement.dir = "ltr";
+        } else {
           document.documentElement.lang = "ar";
           document.documentElement.dir = "rtl";
         }

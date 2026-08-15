@@ -69,9 +69,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     } catch (error) {
       console.error("Email sign-in error:", error);
       setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to send verification code. Please try again.",
+        error instanceof Error ? error.message : a.sendFailed,
       );
       setIsLoading(false);
     }
@@ -89,7 +87,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     } catch (error) {
       console.error("OTP verification error:", error);
 
-      setError("The verification code you entered is incorrect.");
+      setError(a.otpInvalid);
       setIsLoading(false);
 
       setOtp("");
@@ -105,7 +103,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     } catch (error) {
       console.error("Guest login error:", error);
       setError(
-        `Failed to sign in as guest: ${error instanceof Error ? error.message : "Unknown error"}`,
+        fmt(a.guestFailed, {
+          msg: error instanceof Error ? error.message : dict.common.unknownError,
+        }),
       );
       setIsLoading(false);
     }

@@ -200,11 +200,12 @@ export default function Landing() {
                     <Send className="size-3.5 -rotate-12" />
                   </span>
                   <p className="text-[11px] font-semibold text-foreground">
-                    Barq bot <span className="font-normal text-muted-foreground">· now</span>
+                    Barq bot{" "}
+                    <span className="font-normal text-muted-foreground">· {d.hero.mockupNow}</span>
                   </p>
                 </div>
                 <p className="mt-2.5 text-xs leading-5 text-foreground/90">
-                  Great read on Postgres internals{" "}
+                  {d.hero.mockupTitle}{" "}
                   <span className="text-sky-600 dark:text-cyan-300">https://github.com/…</span>{" "}
                   <span className="font-semibold text-indigo-600 dark:text-sky-300">#dev #db</span>
                 </p>
@@ -228,7 +229,7 @@ export default function Landing() {
                   </Badge>
                 </div>
                 <p className="mt-4 text-sm font-semibold leading-6 text-foreground">
-                  Great read on Postgres internals
+                  {d.hero.mockupTitle}
                 </p>
                 <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
                   https://github.com/neondatabase/…
@@ -255,7 +256,7 @@ export default function Landing() {
                   <CheckIcon />
                 </span>
                 <span className="font-mono text-xs font-semibold text-foreground">
-                  #db → 12 posts
+                  {d.hero.mockupChip}
                 </span>
               </motion.div>
             </motion.div>

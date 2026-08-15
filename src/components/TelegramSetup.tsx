@@ -47,7 +47,7 @@ export function TelegramSetup() {
     try {
       setStatus(await statusAction());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not reach the bot");
+      setError(err instanceof Error ? err.message : ts.couldNotReach);
     } finally {
       setLoading(false);
     }
@@ -67,7 +67,7 @@ export function TelegramSetup() {
       await refresh();
     } catch (err) {
       toast.error(ts.toastFailed, {
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: err instanceof Error ? err.message : dict.common.unknownError,
       });
     } finally {
       setRegistering(false);

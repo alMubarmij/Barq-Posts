@@ -1,5 +1,5 @@
 import '@vly-ai/integrations';
-import { SettingsProvider } from "@/components/Settings";
+import { SettingsProvider, useI18n } from "@/components/Settings";
 import { Toaster } from "@/components/ui/sonner";
 import { RequireAuth } from "@/components/RequireAuth";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
@@ -19,9 +19,10 @@ const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
+  const { dict } = useI18n();
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
+      <div className="animate-pulse text-muted-foreground">{dict.common.loading}</div>
     </div>
   );
 }

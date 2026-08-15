@@ -29,6 +29,8 @@ export const en = {
     searchPlaceholder: "Search posts, links, tags…",
     copiedToClipboard: "Copied {what} to clipboard",
     copyFailed: "Could not copy — clipboard blocked in this browser",
+    unknownError: "Unknown error",
+    loading: "Loading…",
   },
   nav: {
     how: "How it works",
@@ -47,6 +49,9 @@ export const en = {
       ctaSecondary: "See how it works",
       bullets: ["No dashboard to fill", "Free hosting ready", "Set up in 3 steps"],
       archived: "Archived just now",
+      mockupNow: "now",
+      mockupTitle: "Great read on Postgres internals",
+      mockupChip: "#db → 12 posts",
     },
     steps: {
       kicker: "How it works",
@@ -132,6 +137,9 @@ export const en = {
     differentEmail: "Use different email",
     securedBy: "Secured by",
     backToLanding: "Back to the landing page",
+    sendFailed: "Failed to send verification code. Please try again.",
+    otpInvalid: "The verification code you entered is incorrect.",
+    guestFailed: "Failed to sign in as guest: {msg}",
   },
   dashboard: {
     feedTitle: "Archive",
@@ -233,6 +241,7 @@ export const en = {
     toastRegistered: "Webhook registered",
     toastFailed: "Could not register webhook",
     copyWebhookUrl: "Copy webhook URL",
+    couldNotReach: "Could not reach the bot",
   },
   notFound: {
     title: "Page not found",
@@ -272,6 +281,8 @@ export const ar: Dict = {
     searchPlaceholder: "ابحث في المنشورات والروابط والوسوم…",
     copiedToClipboard: "تم نسخ {what} إلى الحافظة",
     copyFailed: "تعذّر النسخ — الحافظة محجوبة في هذا المتصفح",
+    unknownError: "خطأ غير معروف",
+    loading: "جارٍ التحميل…",
   },
   nav: {
     how: "كيف يعمل",
@@ -290,6 +301,9 @@ export const ar: Dict = {
       ctaSecondary: "كيف يعمل",
       bullets: ["لا لوحات تحكم لملئها", "استضافة مجانية جاهزة", "الإعداد في ٣ خطوات"],
       archived: "تمت الأرشفة للتو",
+      mockupNow: "الآن",
+      mockupTitle: "قراءة رائعة عن دواخل Postgres",
+      mockupChip: "12 منشورًا في #db",
     },
     steps: {
       kicker: "كيف يعمل",
@@ -375,6 +389,9 @@ export const ar: Dict = {
     differentEmail: "استخدم بريدًا آخر",
     securedBy: "محمي بواسطة",
     backToLanding: "العودة إلى الصفحة الرئيسية",
+    sendFailed: "تعذّر إرسال رمز التحقق. حاول مرة أخرى.",
+    otpInvalid: "رمز التحقق الذي أدخلته غير صحيح.",
+    guestFailed: "تعذّر تسجيل الدخول كضيف: {msg}",
   },
   dashboard: {
     feedTitle: "الأرشيف",
@@ -476,6 +493,7 @@ export const ar: Dict = {
     toastRegistered: "تم تسجيل الويب هوك",
     toastFailed: "تعذّر تسجيل الويب هوك",
     copyWebhookUrl: "نسخ رابط الويب هوك",
+    couldNotReach: "تعذّر الوصول إلى البوت",
   },
   notFound: {
     title: "الصفحة غير موجودة",

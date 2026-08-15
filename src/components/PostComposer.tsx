@@ -126,7 +126,7 @@ export function PostComposer({
       onOpenChange(false);
     } catch (err) {
       toast.error(c.toastFailed, {
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: err instanceof Error ? err.message : dict.common.unknownError,
       });
     } finally {
       setPublishing(false);

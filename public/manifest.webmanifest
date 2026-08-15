@@ -1,7 +1,7 @@
 {
-  "name": "منشورات برقية — your Telegram, archived",
+  "name": "منشورات برقية — أرشيفك عبر تيليغرام",
   "short_name": "منشورات برقية",
-  "description": "Send links and notes to your Telegram bot and they land as tagged posts in your private, searchable archive.",
+  "description": "أرسل الروابط والملاحظات إلى بوت تيليغرام الخاص بك، لتُنشر كمنشورات موسومة في أرشيفك الخاص القابل للبحث.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0e14",

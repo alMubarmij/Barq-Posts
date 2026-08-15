@@ -40,9 +40,9 @@ function initialTheme(): Theme {
 }
 
 function initialLang(): Lang {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined") return "ar";
   const stored = readStored(LANG_KEY);
-  return stored === "ar" ? "ar" : "en";
+  return stored === "en" ? "en" : "ar";
 }
 
 function initialTextSize(): TextSize {
