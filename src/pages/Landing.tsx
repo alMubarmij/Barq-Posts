@@ -9,13 +9,12 @@ import {
   Bookmark,
   Hash,
   Link2,
-  MessagesSquare,
+  PenLine,
   Search,
   Send,
   ShieldCheck,
   Sparkles,
   Tags,
-  Users,
   Zap,
 } from "lucide-react";
 import { Link } from "react-router";
@@ -29,23 +28,23 @@ const fadeUp = {
   }),
 };
 
-const DEMO_TAGS = ["design", "dev", "reading", "ideas", "ai", "links", "team", "rust", "ux", "notes"];
+const DEMO_TAGS = ["dev", "reading", "ideas", "ai", "links", "postgres", "rust", "ux", "notes", "cli"];
 
 const STEPS = [
   {
     icon: Send,
-    title: "DM the bot",
-    text: "Open Telegram, find your team bot and send it anything — a thought, a decision, or just a link.",
+    title: "Message the bot",
+    text: "Open the chat with your bot and send anything — a link worth keeping, a thought, a snippet, or a note to yourself.",
   },
   {
     icon: Tags,
-    title: "It gets tagged",
-    text: "We extract links, keep your #hashtags, and add a domain tag automatically — del.icio.us style.",
+    title: "It gets classified",
+    text: "Links are bookmarked with their domain, your #hashtags are kept, and a title is derived automatically — del.icio.us style.",
   },
   {
     icon: Bookmark,
-    title: "Lands on the board",
-    text: "The post is published instantly. The whole team browses, searches, and filters it in the web app.",
+    title: "Browse the archive",
+    text: "The post lands in your catalog instantly. Search it, filter it by tag, or open its detail page — whenever you need it.",
   },
 ];
 
@@ -53,22 +52,22 @@ const FEATURES = [
   {
     icon: Link2,
     title: "Link bookmarks",
-    text: "Every URL you send becomes a clean bookmark with its domain, title and description — like del.icio.us for your team.",
+    text: "Every URL you send becomes a clean bookmark with its domain and title — the way del.icio.us intended, without the public noise.",
   },
   {
     icon: Hash,
     title: "Tag classification",
-    text: "Explicit #tags and auto domain tags keep everything classified, diigo-style. Filter by any tag in one click.",
+    text: "Explicit #tags and automatic domain tags keep everything organized, diigo-style. Filter by any tag in one click.",
   },
   {
     icon: Zap,
-    title: "Instant publish",
-    text: "No dashboards, no forms. A message in Telegram is a post on the board before the reply confirms it.",
+    title: "Instant publishing",
+    text: "No dashboards, no forms. A message in Telegram is a post in the archive before the confirmation reply arrives.",
   },
   {
-    icon: Users,
-    title: "Private team board",
-    text: "The web app is behind sign-in. Only your team sees what the bot publishes.",
+    icon: ShieldCheck,
+    title: "Private by design",
+    text: "The archive sits behind your sign-in. No public profile, no algorithm, no noise — just your own annotated internet.",
   },
   {
     icon: Search,
@@ -76,9 +75,9 @@ const FEATURES = [
     text: "Full-text search across titles, notes, URLs and tags, so last week's link is three keystrokes away.",
   },
   {
-    icon: MessagesSquare,
-    title: "Notes too",
-    text: "Not every useful thing is a link. Decisions, ideas and call notes are first-class posts as well.",
+    icon: PenLine,
+    title: "Post from the web",
+    text: "Not near your phone? Paste a URL or write a note directly in the app — it's tagged and archived just like a Telegram message.",
   },
 ];
 
@@ -97,7 +96,7 @@ export default function Landing() {
         className="sticky top-4 z-40 mx-auto mt-4 w-[min(100%-2rem,72rem)]"
       >
         <div className="glass-strong flex items-center justify-between rounded-2xl px-4 py-2.5 sm:px-5">
-          <Link to="/" aria-label="Beam home">
+          <Link to="/" aria-label="Barq home">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
@@ -119,7 +118,7 @@ export default function Landing() {
             {isAuthenticated ? (
               <Button asChild className="cursor-pointer rounded-xl" size="sm">
                 <Link to="/dashboard">
-                  Open board <ArrowRight className="size-4" />
+                  Open archive <ArrowRight className="size-4" />
                 </Link>
               </Button>
             ) : (
@@ -154,7 +153,7 @@ export default function Landing() {
                   className="glass-chip gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-primary"
                 >
                   <Sparkles className="size-3.5" />
-                  Telegram → your team&apos;s private board
+                  Telegram → your personal archive
                 </Badge>
               </motion.div>
               <motion.h1
@@ -164,9 +163,9 @@ export default function Landing() {
                 custom={1}
                 className="mt-5 text-4xl font-bold leading-[1.06] tracking-tight sm:text-5xl lg:text-[3.4rem]"
               >
-                Send it to Telegram.
+                Send it once.
                 <br />
-                <span className="text-gradient-cool">It lands on the board.</span>
+                <span className="text-gradient-cool">Find it forever.</span>
               </motion.h1>
               <motion.p
                 variants={fadeUp}
@@ -175,10 +174,9 @@ export default function Landing() {
                 custom={2}
                 className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg"
               >
-                Beam turns your team&apos;s Telegram chats into a searchable
-                publishing board. DM the bot a link or a note, and it&apos;s
-                published as a beautifully tagged post — del.icio.us and diigo
-                style — for the whole team to browse.
+                منشورات برقية turns Telegram into a personal archive. DM your bot
+                a link, a note, or a snippet with #tags — it&apos;s published to
+                your catalog instantly, classified, searchable, and yours alone.
               </motion.p>
               <motion.div
                 variants={fadeUp}
@@ -189,7 +187,7 @@ export default function Landing() {
               >
                 <Button asChild size="lg" className="cursor-pointer rounded-xl px-6">
                   <Link to="/auth">
-                    Start your board <ArrowRight className="size-4" />
+                    Open your archive <ArrowRight className="size-4" />
                   </Link>
                 </Button>
                 <Button
@@ -233,17 +231,17 @@ export default function Landing() {
                 className="glass-panel absolute -left-6 -top-10 z-10 w-56 rounded-2xl rounded-bl-md p-4 sm:-left-12"
               >
                 <div className="flex items-center gap-2">
-                  <span className="flex size-7 items-center justify-center rounded-full bg-sky-500 text-white">
+                  <span className="flex size-7 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-white">
                     <Send className="size-3.5 -rotate-12" />
                   </span>
                   <p className="text-[11px] font-semibold text-foreground">
-                    Beam bot <span className="font-normal text-muted-foreground">· now</span>
+                    Barq bot <span className="font-normal text-muted-foreground">· now</span>
                   </p>
                 </div>
                 <p className="mt-2.5 text-xs leading-5 text-foreground/90">
-                  Love this one — great read on postgres internals{" "}
-                  <span className="text-sky-600">https://github.com/…</span>{" "}
-                  <span className="font-semibold text-indigo-600">#dev #db</span>
+                  Great read on Postgres internals{" "}
+                  <span className="text-cyan-300">https://github.com/…</span>{" "}
+                  <span className="font-semibold text-sky-300">#dev #db</span>
                 </p>
               </motion.div>
 
@@ -255,19 +253,19 @@ export default function Landing() {
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                    <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 text-white">
+                    <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white">
                       <Link2 className="size-4" />
                     </span>
-                    github.com
+                    <span className="font-mono text-[11px]">github.com</span>
                   </span>
                   <Badge variant="secondary" className="glass-chip rounded-full text-[10px]">
-                    Published just now
+                    Archived just now
                   </Badge>
                 </div>
                 <p className="mt-4 text-sm font-semibold leading-6 text-foreground">
-                  Love this one — great read on postgres internals
+                  Great read on Postgres internals
                 </p>
-                <p className="mt-1 truncate text-xs text-muted-foreground">
+                <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
                   https://github.com/neondatabase/…
                 </p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
@@ -291,7 +289,9 @@ export default function Landing() {
                 <span className="flex size-6 items-center justify-center rounded-full bg-emerald-400/90 text-white">
                   <CheckIcon />
                 </span>
-                <span className="text-xs font-semibold text-foreground">#db → 12 posts</span>
+                <span className="font-mono text-xs font-semibold text-foreground">
+                  #db → 12 posts
+                </span>
               </motion.div>
             </motion.div>
           </div>
@@ -309,7 +309,7 @@ export default function Landing() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 + i * 0.05 }}
-                className="glass-chip inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+                className="glass-chip inline-flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
               >
                 <Hash className="size-3" /> {tag}
               </motion.span>
@@ -322,7 +322,7 @@ export default function Landing() {
           <SectionHeading
             kicker="How it works"
             title="One message. One post. Done."
-            text="Three steps between your brain and your team's board."
+            text="Three steps between something you found and something you'll find again."
           />
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {STEPS.map((step, i) => (
@@ -332,12 +332,12 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.12 }}
-                className="glass-panel group relative overflow-hidden rounded-3xl p-6 transition-colors hover:border-white/90"
+                className="glass-panel group relative overflow-hidden rounded-3xl p-6 transition-colors hover:border-white/20"
               >
-                <span className="absolute right-5 top-4 text-4xl font-black text-primary/10">
+                <span className="absolute right-5 top-4 font-mono text-4xl font-black text-primary/10">
                   0{i + 1}
                 </span>
-                <span className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/90 to-indigo-500/90 text-white transition-transform group-hover:scale-105">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400/90 via-sky-500/90 to-blue-600/90 text-white transition-transform group-hover:scale-105">
                   <step.icon className="size-5" />
                 </span>
                 <h3 className="mt-5 text-lg font-bold tracking-tight text-foreground">
@@ -353,8 +353,8 @@ export default function Landing() {
         <section id="features" className="mx-auto w-[min(100%-2rem,72rem)] py-16 sm:py-20">
           <SectionHeading
             kicker="Features"
-            title="Bookmarking ideas, done right"
-            text="The classification power of del.icio.us and diigo, rebuilt for how teams actually share today — inside Telegram."
+            title="Bookmarking, done right"
+            text="The classification power of del.icio.us and diigo, rebuilt for how you actually save things today — inside Telegram."
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((feature, i) => (
@@ -364,7 +364,7 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.45, delay: (i % 3) * 0.1 }}
-                className="glass-panel rounded-3xl p-6 transition-colors hover:border-white/90"
+                className="glass-panel rounded-3xl p-6 transition-colors hover:border-white/20"
               >
                 <span className="flex size-10 items-center justify-center rounded-xl bg-accent text-primary">
                   <feature.icon className="size-5" />
@@ -388,26 +388,26 @@ export default function Landing() {
                 <SectionHeading
                   align="left"
                   kicker="Tag cloud"
-                  title="Your board, classified like the classics"
+                  title="Your archive, classified like the classics"
                   text="Every post keeps its #tags, and every link earns a domain tag automatically. The result is a living tag cloud that makes last quarter's research one click away."
                 />
                 <Button asChild className="mt-8 cursor-pointer rounded-xl">
                   <Link to="/auth">
-                    Try it with your team <ArrowRight className="size-4" />
+                    Start archiving <ArrowRight className="size-4" />
                   </Link>
                 </Button>
               </div>
               <div className="flex flex-wrap content-center items-center justify-center gap-3">
                 {[
-                  ["design", 9],
                   ["dev", 14],
+                  ["postgres", 9],
                   ["reading", 6],
                   ["ai", 11],
                   ["ideas", 5],
-                  ["team", 8],
-                  ["rust", 4],
-                  ["ux", 7],
+                  ["rust", 7],
+                  ["ux", 4],
                   ["notes", 3],
+                  ["cli", 8],
                 ].map(([tag, size], i) => (
                   <motion.span
                     key={tag}
@@ -419,7 +419,7 @@ export default function Landing() {
                       fontSize: `${10 + (size as number) * 1.1}px`,
                       opacity: 0.55 + (size as number) * 0.035,
                     }}
-                    className="glass-chip inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 font-semibold text-primary"
+                    className="glass-chip inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 font-mono font-semibold text-primary"
                   >
                     <Hash className="size-3.5" /> {tag}
                   </motion.span>
@@ -438,17 +438,18 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             className="glass-strong relative overflow-hidden rounded-[2rem] p-10 text-center sm:p-16"
           >
-            <span className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-sky-300/30 blur-3xl" />
+            <span className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-cyan-400/15 blur-3xl" />
             <Badge variant="outline" className="glass-chip rounded-full px-3 py-1 text-xs font-medium text-primary">
               <Zap className="size-3.5" /> Free forever tier
             </Badge>
             <h2 className="mx-auto mt-5 max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-              Your team&apos;s next useful link is{" "}
+              Your next useful link is{" "}
               <span className="text-gradient-cool">one DM away</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
-              Create a bot in two minutes, drop the token in, and start publishing.
-              No new tools for anyone — everyone already lives in Telegram.
+              Create a bot in two minutes, drop the token in, and start
+              publishing. Every message you send to yourself is a bookmark
+              you&apos;ll actually find later.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="cursor-pointer rounded-xl px-7">
@@ -462,7 +463,7 @@ export default function Landing() {
                 variant="outline"
                 className="glass-chip cursor-pointer rounded-xl px-7 text-foreground"
               >
-                <Link to="/auth">Sign in to your board</Link>
+                <Link to="/auth">Sign in to your archive</Link>
               </Button>
             </div>
           </motion.div>
@@ -474,7 +475,7 @@ export default function Landing() {
         <div className="mx-auto flex w-[min(100%-2rem,72rem)] flex-col items-center justify-between gap-4 py-8 sm:flex-row">
           <Logo />
           <p className="text-xs text-muted-foreground">
-            Built on Telegram, Convex &amp; free hosting — Vercel · Netlify · Cloudflare Pages
+            منشورات برقية — built on Telegram, Convex &amp; free hosting · Vercel · Netlify · Cloudflare Pages
           </p>
           <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
             <Link to="/auth" className="transition-colors hover:text-foreground">
@@ -528,7 +529,7 @@ function SectionHeading({
       transition={{ duration: 0.5 }}
       className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}
     >
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{kicker}</p>
+      <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-primary">{kicker}</p>
       <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
       <p className="mt-3 text-base leading-7 text-muted-foreground">{text}</p>
     </motion.div>

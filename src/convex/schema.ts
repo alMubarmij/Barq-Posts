@@ -32,8 +32,9 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // posts published from Telegram. private team board.
+    // posts published to the personal archive, from Telegram or the web app.
     posts: defineTable({
+      source: v.union(v.literal("telegram"), v.literal("web")),
       type: v.union(v.literal("link"), v.literal("message")),
       title: v.string(),
       text: v.string(),

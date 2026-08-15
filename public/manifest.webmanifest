@@ -1,11 +1,11 @@
 {
-  "name": "Beam — Telegram post board for teams",
-  "short_name": "Beam",
-  "description": "Send links and notes to your Telegram bot and they land as tagged posts on your team's private board.",
+  "name": "منشورات برقية — your Telegram, archived",
+  "short_name": "منشورات برقية",
+  "description": "Send links and notes to your Telegram bot and they land as tagged posts in your private, searchable archive.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f2f6fc",
-  "theme_color": "#4f6ef2",
+  "background_color": "#0b0e14",
+  "theme_color": "#7cc4f2",
   "icons": [
     {
       "src": "/logo.png",

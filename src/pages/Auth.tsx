@@ -123,10 +123,10 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       <Logo />
                     </Link>
                   </div>
-                  <CardTitle className="text-xl">Get started with Beam</CardTitle>
+                  <CardTitle className="text-xl">Sign in to your archive</CardTitle>
                   <CardDescription>
-                    Enter your email to log in or sign up — your team&apos;s
-                    board is private
+                    Enter your email to log in or sign up — منشورات برقية is
+                    private, and the archive is yours alone
                   </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleEmailSubmit}>
@@ -181,7 +181,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         disabled={isLoading}
                       >
                         <UserX className="mr-2 h-4 w-4" />
-                        Continue as Guest
+                        Continue as guest
                       </Button>
                     </div>
                   </CardContent>

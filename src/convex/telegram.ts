@@ -52,11 +52,11 @@ async function telegramApi(
   return (await res.json().catch(() => ({}))) as TelegramResult;
 }
 
-function cleanUrl(raw: string): string {
+export function cleanUrl(raw: string): string {
   return raw.replace(/[.,;:!?)\]}>]+$/g, "");
 }
 
-function deriveDomain(url: string): string {
+export function deriveDomain(url: string): string {
   try {
     const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
     const parts = host.split(".");
@@ -69,7 +69,7 @@ function deriveDomain(url: string): string {
   }
 }
 
-function extractLinks(text: string): { url: string; domain: string }[] {
+export function extractLinks(text: string): { url: string; domain: string }[] {
   const seen = new Set<string>();
   const links: { url: string; domain: string }[] = [];
   for (const match of text.match(URL_REGEX) ?? []) {
@@ -155,7 +155,7 @@ export const handleUpdate = httpAction(async (ctx, request) => {
   if (!text) {
     await telegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: "Send me a message or a link and I'll publish it to your team board. Add #tags like #design to classify it.",
+      text: "Send me a message or a link and I'll publish it to your personal archive. Add #tags like #design to classify it.",
     });
     return json({ ok: true, ignored: "no text" }, 200);
   }
@@ -204,7 +204,7 @@ export const handleUpdate = httpAction(async (ctx, request) => {
 
   const tagLine = [...tags].map((t) => `#${t}`).join(" ");
   const reply = [
-    "✅ Published to your team board",
+    "✅ Published to your archive",
     `“${title}”`,
     tagLine ? `Tags: ${tagLine}` : "",
   ]

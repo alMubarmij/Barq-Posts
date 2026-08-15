@@ -10,13 +10,18 @@ export function Logo({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 via-indigo-400 to-indigo-600 text-white">
-        <span className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/50" />
+      <span className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white shadow-[0_8px_20px_-8px_oklch(0.7_0.14_215/0.6)]">
+        <span className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/40" />
         <Send className="size-4 -rotate-12" strokeWidth={2.4} />
       </span>
       {!iconOnly && (
-        <span className="text-lg font-bold tracking-tight text-foreground">
-          Beam
+        <span className="flex flex-col leading-none">
+          <span className="text-[1.05rem] font-bold text-foreground">
+            منشورات برقية
+          </span>
+          <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            Barq · Telegram archive
+          </span>
         </span>
       )}
     </span>

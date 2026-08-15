@@ -3,11 +3,12 @@ import { v } from "convex/values";
 import {
   internalMutation,
   internalQuery,
+  mutation,
   query,
 } from "./_generated/server";
 
 /**
- * All published posts, newest first. The board is private: requires a signed
+ * All published posts, newest first. The archive is private: requires a signed
  * in user. The client filters by tag / type / search text reactively.
  */
 export const list = query({
@@ -21,7 +22,7 @@ export const list = query({
   },
 });
 
-/** Single post, used by the detail dialog. */
+/** Single post, used by the detail page. */
 export const get = query({
   args: { id: v.id("posts") },
   handler: async (ctx, args) => {
@@ -30,6 +31,54 @@ export const get = query({
       throw new Error("Not authenticated");
     }
     return await ctx.db.get(args.id);
+  },
+});
+
+/** Publish a post from the web app — a note, a link bookmark, or both. */
+export const create = mutation({
+  args: {
+    title: v.string(),
+    text: v.string(),
+    links: v.array(
+      v.object({
+        url: v.string(),
+        domain: v.string(),
+      }),
+    ),
+    tags: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Not authenticated");
+    }
+    const user = await ctx.db.get(userId);
+    const text = args.text.trim();
+    const links = args.links.filter((l) => l.url.trim().length > 0);
+    const type = links.length > 0 ? "link" : "message";
+    const title =
+      args.title.trim() ||
+      text.split("\n")[0].slice(0, 140) ||
+      links[0]?.domain ||
+      "Untitled post";
+
+    return ctx.db.insert("posts", {
+      source: "web",
+      type,
+      title: title.slice(0, 200),
+      text,
+      links,
+      tags: args.tags,
+      author: {
+        telegramId: 0,
+        username: undefined,
+        firstName: user?.name ?? "You",
+        lastName: undefined,
+      },
+      chatId: 0,
+      sourceMessageId: 0,
+      publishedAt: Date.now(),
+    });
   },
 });
 
@@ -80,7 +129,10 @@ export const insertPost = internalMutation({
     publishedAt: v.number(),
   },
   handler: async (ctx, args) => {
-    const id = await ctx.db.insert("posts", args);
+    const id = await ctx.db.insert("posts", {
+      ...args,
+      source: "telegram",
+    });
     return id;
   },
 });

@@ -41,7 +41,7 @@ const STEPS = [
   {
     icon: Wrench,
     title: "Register the webhook",
-    text: "Hit the button below and Beam connects Telegram to your board. Then just DM your bot.",
+    text: "Hit the button below and Barq connects Telegram to your archive. Then just DM your bot.",
   },
 ];
 
@@ -128,20 +128,20 @@ export function TelegramSetup() {
               Checking Telegram connection…
             </div>
           ) : error ? (
-            <div className="flex items-start gap-3 rounded-2xl bg-red-50/80 p-4 text-sm text-red-600">
+            <div className="flex items-start gap-3 rounded-2xl bg-red-500/10 p-4 text-sm text-red-300 ring-1 ring-inset ring-red-400/25">
               <AlertTriangle className="mt-0.5 size-4 shrink-0" />
               <div>
                 <p className="font-semibold">Status check failed</p>
-                <p className="mt-0.5 text-red-500/90">{error}</p>
+                <p className="mt-0.5 text-red-300/80">{error}</p>
               </div>
             </div>
           ) : status && !status.configured ? (
-            <div className="flex items-start gap-3 rounded-2xl bg-amber-50/80 p-4 text-sm text-amber-700">
+            <div className="flex items-start gap-3 rounded-2xl bg-amber-400/10 p-4 text-sm text-amber-200 ring-1 ring-inset ring-amber-400/25">
               <AlertTriangle className="mt-0.5 size-4 shrink-0" />
               <div>
                 <p className="font-semibold">Token not configured yet</p>
                 <p className="mt-0.5">
-                  Add <code className="rounded bg-white/70 px-1.5 py-0.5 font-mono text-xs">TELEGRAM_BOT_TOKEN</code>{" "}
+                  Add <code className="rounded bg-amber-400/15 px-1.5 py-0.5 font-mono text-xs text-amber-100">TELEGRAM_BOT_TOKEN</code>{" "}
                   to the project keys, then hit refresh.
                 </p>
               </div>
@@ -149,7 +149,7 @@ export function TelegramSetup() {
           ) : status ? (
             <>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-600 ring-1 ring-inset ring-emerald-200">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-400/30">
                   <CheckCircle2 className="size-3.5" />
                   {status.bot?.username
                     ? `Connected as @${status.bot.username}`
@@ -158,8 +158,8 @@ export function TelegramSetup() {
                 <span
                   className={
                     status.webhook?.url
-                      ? "inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-600 ring-1 ring-inset ring-emerald-200"
-                      : "inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-600 ring-1 ring-inset ring-amber-200"
+                      ? "inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-400/30"
+                      : "inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-200 ring-1 ring-inset ring-amber-400/30"
                   }
                 >
                   <Wrench className="size-3.5" />
@@ -259,7 +259,7 @@ export function TelegramSetup() {
         </Button>
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
           After registering, message your bot in Telegram — every link or note
-          you send is published to the board instantly.
+          you send is published to your archive instantly.
         </p>
       </div>
     </div>

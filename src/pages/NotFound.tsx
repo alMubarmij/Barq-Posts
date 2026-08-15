@@ -15,7 +15,7 @@ export default function NotFound() {
     >
       <BackgroundFX />
       <div className="flex flex-1 flex-col items-center justify-center px-4">
-        <Link to="/" aria-label="Beam home">
+        <Link to="/" aria-label="Barq home">
           <Logo />
         </Link>
         <motion.div
@@ -27,11 +27,11 @@ export default function NotFound() {
           <p className="text-6xl font-black tracking-tight text-gradient-cool">404</p>
           <h1 className="mt-3 text-xl font-bold tracking-tight">Page not found</h1>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            This link didn&apos;t land on the board. Head back to your feed.
+            This link didn&apos;t land in your archive. Head back to the catalog.
           </p>
           <Button asChild className="mt-6 cursor-pointer rounded-xl">
             <Link to="/dashboard">
-              Back to the board <ArrowRight className="size-4" />
+              Back to the archive <ArrowRight className="size-4" />
             </Link>
           </Button>
         </motion.div>

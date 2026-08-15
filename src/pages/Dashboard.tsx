@@ -1,7 +1,7 @@
 import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
 import { PostCard } from "@/components/PostCard";
-import { PostDetailDialog } from "@/components/PostDetailDialog";
+import { PostComposer } from "@/components/PostComposer";
 import { TelegramSetup } from "@/components/TelegramSetup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,23 +11,25 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  Archive,
   Hash,
   Inbox,
   Loader2,
   LogOut,
+  Plus,
   Search,
   Send,
   Tags,
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 
 type View = "feed" | "tags" | "telegram";
 type TypeFilter = "all" | "link" | "message";
 
 const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
-  { id: "feed", label: "Board", icon: Inbox },
+  { id: "feed", label: "Archive", icon: Archive },
   { id: "tags", label: "Tags", icon: Tags },
   { id: "telegram", label: "Telegram", icon: Send },
 ];
@@ -35,13 +37,16 @@ const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const posts = useQuery(api.posts.list);
 
   const [view, setView] = useState<View>("feed");
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [tagFilter, setTagFilter] = useState<string | null>(
+    searchParams.get("tag"),
+  );
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [search, setSearch] = useState("");
-  const [selectedPost, setSelectedPost] = useState<Doc<"posts"> | null>(null);
+  const [composerOpen, setComposerOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -91,7 +96,7 @@ export default function Dashboard() {
 
   const topTags = tagCounts.slice(0, 8);
   const maxTagCount = Math.max(1, ...tagCounts.map(([, c]) => c));
-  const initials = (user?.name ?? user?.email ?? "G")
+  const initials = (user?.name ?? user?.email ?? "Y")
     .slice(0, 2)
     .toUpperCase();
 
@@ -108,7 +113,7 @@ export default function Dashboard() {
       <div className="mx-auto flex w-[min(100%-1.25rem,96rem)] flex-col gap-4 py-4 lg:flex-row lg:gap-5">
         {/* Desktop sidebar */}
         <aside className="glass-strong sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 flex-col rounded-3xl p-4 lg:flex">
-          <Link to="/" aria-label="Beam home">
+          <Link to="/" aria-label="Barq home">
             <Logo />
           </Link>
 
@@ -150,17 +155,26 @@ export default function Dashboard() {
             })}
           </nav>
 
+          <Button
+            type="button"
+            className="mt-5 w-full cursor-pointer rounded-xl"
+            onClick={() => setComposerOpen(true)}
+          >
+            <Plus className="size-4" />
+            New post
+          </Button>
+
           <div className="mt-auto space-y-3">
             <div className="glass-chip flex items-center gap-2.5 rounded-2xl p-2.5">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 text-xs font-bold text-white">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-xs font-bold text-white">
                 {initials}
               </span>
               <div className="min-w-0">
                 <p className="truncate text-xs font-bold text-foreground">
-                  {user?.name ?? user?.email ?? "Guest"}
+                  {user?.name ?? user?.email ?? "You"}
                 </p>
-                <p className="truncate text-[11px] text-muted-foreground">
-                  {user?.email ?? "Private board member"}
+                <p className="truncate font-mono text-[10px] text-muted-foreground">
+                  {user?.email ?? "Private archive owner"}
                 </p>
               </div>
             </div>
@@ -180,7 +194,7 @@ export default function Dashboard() {
         <div className="min-w-0 flex-1">
           {/* Mobile top bar */}
           <div className="glass-strong sticky top-3 z-30 mb-4 flex items-center justify-between gap-2 rounded-2xl px-3 py-2 lg:hidden">
-            <Link to="/" aria-label="Beam home">
+            <Link to="/" aria-label="Barq home">
               <Logo iconOnly />
             </Link>
             <div className="flex items-center gap-1">
@@ -200,6 +214,16 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-8 cursor-pointer rounded-lg"
+              onClick={() => setComposerOpen(true)}
+              aria-label="New post"
+            >
+              <Plus className="size-4" />
+            </Button>
             <Button
               type="button"
               variant="ghost"
@@ -237,7 +261,7 @@ export default function Dashboard() {
                     loading={posts === undefined}
                     hasAnyPosts={stats.total > 0}
                     onClearFilters={clearFilters}
-                    onOpenPost={setSelectedPost}
+                    onNewPost={() => setComposerOpen(true)}
                     onGoToTelegram={() => setView("telegram")}
                   />
                 )}
@@ -255,7 +279,7 @@ export default function Dashboard() {
                   <div>
                     <Header
                       title="Telegram"
-                      subtitle="Connect your bot and start publishing"
+                      subtitle="Connect your bot and start publishing from your phone"
                     />
                     <TelegramSetup />
                   </div>
@@ -266,13 +290,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <PostDetailDialog
-        post={selectedPost}
-        open={selectedPost !== null}
-        onOpenChange={(open) => {
-          if (!open) setSelectedPost(null);
-        }}
-      />
+      <PostComposer open={composerOpen} onOpenChange={setComposerOpen} />
     </div>
   );
 }
@@ -301,7 +319,7 @@ function FeedView({
   loading,
   hasAnyPosts,
   onClearFilters,
-  onOpenPost,
+  onNewPost,
   onGoToTelegram,
 }: {
   posts: Doc<"posts">[];
@@ -318,7 +336,7 @@ function FeedView({
   loading: boolean;
   hasAnyPosts: boolean;
   onClearFilters: () => void;
-  onOpenPost: (post: Doc<"posts">) => void;
+  onNewPost: () => void;
   onGoToTelegram: () => void;
 }) {
   const types: { id: TypeFilter; label: string; count: number }[] = [
@@ -331,19 +349,31 @@ function FeedView({
     <div>
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Board</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Archive
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Everything your team published from Telegram
+            Everything you&apos;ve published — from Telegram or right here
           </p>
         </div>
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => onSearch(e.target.value)}
-            placeholder="Search posts, links, tags…"
-            className="glass-chip rounded-xl pl-9"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => onSearch(e.target.value)}
+              placeholder="Search posts, links, tags…"
+              className="glass-chip rounded-xl pl-9"
+            />
+          </div>
+          <Button
+            type="button"
+            className="hidden shrink-0 cursor-pointer rounded-xl sm:inline-flex"
+            onClick={onNewPost}
+          >
+            <Plus className="size-4" />
+            New post
+          </Button>
         </div>
       </div>
 
@@ -363,7 +393,9 @@ function FeedView({
             {t.label}
             <span
               className={
-                typeFilter === t.id ? "text-primary-foreground/70" : "text-muted-foreground/70"
+                typeFilter === t.id
+                  ? "text-primary-foreground/70"
+                  : "text-muted-foreground/70"
               }
             >
               {t.count}
@@ -398,7 +430,7 @@ function FeedView({
             <button
               type="button"
               onClick={onClearFilters}
-              className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/10"
             >
               <X className="size-3" /> Clear
             </button>
@@ -410,20 +442,20 @@ function FeedView({
       {loading ? (
         <div className="glass-panel flex items-center justify-center gap-2 rounded-3xl py-20 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          Loading your board…
+          Loading your archive…
         </div>
       ) : posts.length === 0 ? (
         <div className="glass-panel rounded-3xl px-6 py-16 text-center">
-          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 text-white">
-            <Send className="size-6" />
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white">
+            <Archive className="size-6" />
           </span>
           <h3 className="mt-5 text-lg font-bold tracking-tight">
-            {hasAnyPosts ? "No posts match" : "Nothing published yet"}
+            {hasAnyPosts ? "Nothing matches" : "Nothing archived yet"}
           </h3>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
             {hasAnyPosts
               ? "Try a different tag, type or search term."
-              : "Message your Telegram bot with a link or a note — it lands here, tagged and ready."}
+              : "Message your Telegram bot with a link or a note — it lands here, tagged and ready. Or publish something right now."}
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             {hasAnyPosts ? (
@@ -436,14 +468,25 @@ function FeedView({
                 Clear filters
               </Button>
             ) : (
-              <Button
-                type="button"
-                className="cursor-pointer rounded-xl"
-                onClick={onGoToTelegram}
-              >
-                <Send className="size-4" />
-                Connect Telegram
-              </Button>
+              <>
+                <Button
+                  type="button"
+                  className="cursor-pointer rounded-xl"
+                  onClick={onNewPost}
+                >
+                  <Plus className="size-4" />
+                  New post
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="glass-chip cursor-pointer rounded-xl"
+                  onClick={onGoToTelegram}
+                >
+                  <Send className="size-4" />
+                  Connect Telegram
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -456,11 +499,7 @@ function FeedView({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: Math.min(i * 0.04, 0.3) }}
             >
-              <PostCard
-                post={post}
-                onOpen={onOpenPost}
-                onTagClick={onTagClick}
-              />
+              <PostCard post={post} onTagClick={onTagClick} />
             </motion.div>
           ))}
         </div>
@@ -482,7 +521,7 @@ function TagsView({
     <div>
       <Header
         title="Tags"
-        subtitle={`${tagCounts.length} tag${tagCounts.length === 1 ? "" : "s"} across your board — click one to filter`}
+        subtitle={`${tagCounts.length} tag${tagCounts.length === 1 ? "" : "s"} across your archive — click one to filter`}
       />
       {tagCounts.length === 0 ? (
         <div className="glass-panel rounded-3xl px-6 py-16 text-center">
