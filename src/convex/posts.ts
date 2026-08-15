@@ -62,13 +62,23 @@ export const create = mutation({
       links[0]?.domain ||
       "منشور بدون عنوان";
 
+    // Auto-classify link domains as tags — same behavior as Telegram posts,
+    // so web-published bookmarks are filtered/grouped identically.
+    const tags = [...args.tags];
+    for (const link of links) {
+      const domainTag = link.domain.toLowerCase();
+      if (domainTag && !tags.includes(domainTag)) {
+        tags.push(domainTag);
+      }
+    }
+
     return ctx.db.insert("posts", {
       source: "web",
       type,
       title: title.slice(0, 200),
       text,
       links,
-      tags: args.tags,
+      tags,
       author: {
         telegramId: 0,
         username: undefined,
