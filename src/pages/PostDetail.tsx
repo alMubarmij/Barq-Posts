@@ -211,7 +211,7 @@ export default function PostDetail() {
                       </a>
                       <button
                         type="button"
-                        onClick={() => copyText(link.url, "link")}
+                        onClick={() => copyText(link.url, pd.link)}
                         className="cursor-pointer rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                         aria-label={pd.copyLink}
                       >
@@ -246,16 +246,18 @@ export default function PostDetail() {
 
             {/* Actions */}
             <div className="mt-9 flex flex-wrap gap-2 border-t border-border/60 pt-5">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="glass-chip cursor-pointer rounded-xl"
-                onClick={() => copyText(post.text, "post text")}
-              >
-                <Copy className="size-3.5" />
-                {pd.copyText}
-              </Button>
+              {post.text && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="glass-chip cursor-pointer rounded-xl"
+                  onClick={() => copyText(post.text, pd.text)}
+                >
+                  <Copy className="size-3.5" />
+                  {pd.copyText}
+                </Button>
+              )}
               {post.links.length > 0 && (
                 <>
                   <Button
@@ -278,7 +280,7 @@ export default function PostDetail() {
                     variant="outline"
                     size="sm"
                     className="glass-chip cursor-pointer rounded-xl"
-                    onClick={() => copyText(post.links[0].url, "link")}
+                    onClick={() => copyText(post.links[0].url, pd.link)}
                   >
                     <Link2 className="size-3.5" />
                     {pd.copyLink}

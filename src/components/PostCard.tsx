@@ -34,7 +34,10 @@ export function PostCard({
       tabIndex={0}
       onClick={open}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") open();
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open();
+        }
       }}
       className="glass-panel group w-full cursor-pointer rounded-2xl p-5 text-start transition-all duration-200 hover:border-white/90 hover:bg-white/75 dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
     >

@@ -41,6 +41,27 @@ export function TelegramSetup() {
   const [registering, setRegistering] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Initial load: fetch on mount without calling setState synchronously
+  // inside the effect body (react-hooks/set-state-in-effect).
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const result = await statusAction();
+        if (!cancelled) setStatus(result);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : ts.couldNotReach);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [statusAction, ts.couldNotReach]);
+
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -51,11 +72,7 @@ export function TelegramSetup() {
     } finally {
       setLoading(false);
     }
-  }, [statusAction]);
-
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
+  }, [statusAction, ts.couldNotReach]);
 
   const registerWebhook = async () => {
     setRegistering(true);
