@@ -60,7 +60,7 @@ export const create = mutation({
       args.title.trim() ||
       text.split("\n")[0].slice(0, 140) ||
       links[0]?.domain ||
-      "Untitled post";
+      "منشور بدون عنوان";
 
     return ctx.db.insert("posts", {
       source: "web",

@@ -104,9 +104,9 @@ function deriveTitle(
   if (type === "link") {
     const withoutUrls = withoutTags.replace(URL_REGEX, "").trim();
     if (withoutUrls) return withoutUrls.slice(0, 140);
-    return links[0]?.domain ?? "Shared link";
+    return links[0]?.domain ?? "رابط مشترك";
   }
-  return withoutTags ? withoutTags.slice(0, 140) : "Untitled note";
+  return withoutTags ? withoutTags.slice(0, 140) : "ملاحظة بدون عنوان";
 }
 
 /**

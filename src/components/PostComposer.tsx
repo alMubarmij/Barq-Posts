@@ -135,7 +135,10 @@ export function PostComposer({
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto rounded-3xl sm:max-w-xl">
+      <DialogContent
+        className="glass-strong max-h-[90vh] overflow-y-auto rounded-3xl sm:max-w-xl"
+        closeLabel={dict.common.close}
+      >
         <DialogHeader>
           <DialogTitle className="text-lg">{c.title}</DialogTitle>
           <DialogDescription>{c.description}</DialogDescription>
