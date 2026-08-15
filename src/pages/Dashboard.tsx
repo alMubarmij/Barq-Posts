@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth";
-import { plural } from "@/lib/i18n";
+import { arPlural, plural } from "@/lib/i18n";
 import { useQuery } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -533,13 +533,17 @@ function TagsView({
   maxCount: number;
   onTagClick: (tag: string) => void;
 }) {
-  const { dict } = useI18n();
+  const { dict, isAr } = useI18n();
   const dd = dict.dashboard;
   return (
     <div>
       <Header
         title={dd.tagsTitle}
-        subtitle={plural(dd.tagsSubtitle, tagCounts.length)}
+        subtitle={
+          isAr
+            ? arPlural(dd.tagsSubtitle, tagCounts.length)
+            : plural(dd.tagsSubtitle.base, tagCounts.length)
+        }
       />
       {tagCounts.length === 0 ? (
         <div className="glass-panel rounded-3xl px-6 py-16 text-center">

@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { fmt } from "@/lib/i18n";
+import { arPlural, fmt } from "@/lib/i18n";
 import { useMutation } from "convex/react";
 import { useState } from "react";
 import {
@@ -82,7 +82,7 @@ export function PostComposer({
   onOpenChange: (open: boolean) => void;
 }) {
   const createPost = useMutation(api.posts.create);
-  const { dict } = useI18n();
+  const { dict, isAr } = useI18n();
   const c = dict.composer;
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -212,7 +212,7 @@ export function PostComposer({
               )}
             </span>
             <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
-              {fmt(c.chars, { n: text.length })}
+              {isAr ? arPlural(c.chars, text.length) : fmt(c.chars.base, { n: text.length })}
             </span>
           </div>
 

@@ -1,7 +1,7 @@
 import { api } from "@/convex/_generated/api";
 import { useI18n } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
-import { fmt } from "@/lib/i18n";
+import { arPlural, fmt } from "@/lib/i18n";
 import { useAction } from "convex/react";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -31,7 +31,7 @@ type StatusResult = {
 export function TelegramSetup() {
   const statusAction = useAction(api.telegram.status);
   const setWebhookAction = useAction(api.telegram.setWebhook);
-  const { dict } = useI18n();
+  const { dict, isAr } = useI18n();
   const ts = dict.telegramSetup;
 
   const stepIcons = [Bot, KeyRound, Wrench];
@@ -197,11 +197,13 @@ export function TelegramSetup() {
               {typeof status.webhook?.pending_update_count === "number" &&
                 status.webhook.pending_update_count > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    {status.webhook.pending_update_count === 1
-                      ? ts.pendingOne
-                      : fmt(ts.pendingMany, {
-                          n: status.webhook.pending_update_count,
-                        })}
+                    {isAr
+                      ? arPlural(ts.pendingMany, status.webhook.pending_update_count)
+                      : status.webhook.pending_update_count === 1
+                        ? ts.pendingOne
+                        : fmt(ts.pendingMany.base, {
+                            n: status.webhook.pending_update_count,
+                          })}
                   </p>
                 )}
               {status.webhook?.last_error_message && (

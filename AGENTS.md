@@ -174,7 +174,7 @@ independent of the React app. Conventions:
 
 ## 9. Telegram integration
 
-- Bot replies are **Arabic-only Standard Arabic** (e.g. `✅ تم النشر إلى أرشيفك`).
+- Bot replies are **Arabic-only Standard Arabic** (e.g. `✅ نُشر إلى أرشيفك`).
 - Secrets: `TELEGRAM_BOT_TOKEN` (+ optional `TELEGRAM_WEBHOOK_SECRET`). The
   user pastes them into the project **Keys/API keys UI** — never edit `.env`.
   Backend code reads them via `process.env` inside Convex actions in

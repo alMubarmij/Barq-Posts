@@ -72,7 +72,7 @@ export const create = mutation({
       author: {
         telegramId: 0,
         username: undefined,
-        firstName: user?.name ?? "You",
+        firstName: user?.name ?? "أنت",
         lastName: undefined,
       },
       chatId: 0,

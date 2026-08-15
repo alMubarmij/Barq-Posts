@@ -1,5 +1,18 @@
 /** Simple two-language dictionary with {placeholder} interpolation. */
 
+/**
+ * Plural-aware template. `base` is the English template (uses {n}/{s}).
+ * `one`/`two`/`few`/`many` are the Arabic plural categories:
+ * 1 → one, 2 → two, 3–10 → few, 11+ → many.
+ */
+export type PluralForms = {
+  base: string;
+  one: string;
+  two: string;
+  few: string;
+  many: string;
+};
+
 export const en = {
   brand: {
     tagline: "Barq · Telegram archive",
@@ -152,7 +165,13 @@ export const en = {
     emptyText: "Message your Telegram bot with a link or a note — it lands here, tagged and ready. Or publish something right now.",
     emptyNoMatchText: "Try a different tag, type or search term.",
     tagsTitle: "Tags",
-    tagsSubtitle: "{n} tag{s} across your archive — click one to filter",
+    tagsSubtitle: {
+      base: "{n} tag{s} across your archive — click one to filter",
+      one: "{n} tag{s} across your archive — click one to filter",
+      two: "{n} tag{s} across your archive — click one to filter",
+      few: "{n} tag{s} across your archive — click one to filter",
+      many: "{n} tag{s} across your archive — click one to filter",
+    },
     noTagsTitle: "No tags yet",
     noTagsText:
       "Tags appear here as you publish — use #hashtags in Telegram and links get domain tags automatically.",
@@ -164,7 +183,13 @@ export const en = {
     viaTelegram: "via Telegram",
     addedManually: "added manually",
     openPost: "Open post",
-    moreLinks: "+{n} more links",
+    moreLinks: {
+      base: "+{n} more links",
+      one: "+1 more link",
+      two: "+{n} more links",
+      few: "+{n} more links",
+      many: "+{n} more links",
+    },
     moreLink: "+1 more link",
   },
   postDetail: {
@@ -198,7 +223,13 @@ export const en = {
     tagsHint: "A link earns its domain tag automatically.",
     willBeLink: "Will be archived as a link bookmark",
     willBeNote: "Will be archived as a note",
-    chars: "{n} chars",
+    chars: {
+      base: "{n} chars",
+      one: "{n} chars",
+      two: "{n} chars",
+      few: "{n} chars",
+      many: "{n} chars",
+    },
     publish: "Publish post",
     publishing: "Publishing…",
     toastPublished: "Published to your archive",
@@ -219,7 +250,13 @@ export const en = {
     webhookRegistered: "Webhook registered",
     webhookNotRegistered: "not registered",
     pendingOne: "1 pending update queued on Telegram.",
-    pendingMany: "{n} pending updates queued on Telegram.",
+    pendingMany: {
+      base: "{n} pending updates queued on Telegram.",
+      one: "1 pending update queued on Telegram.",
+      two: "{n} pending updates queued on Telegram.",
+      few: "{n} pending updates queued on Telegram.",
+      many: "{n} pending updates queued on Telegram.",
+    },
     lastError: "Last webhook error: {msg}",
     setupTitle: "Set up in 3 steps",
     steps: [
@@ -263,8 +300,8 @@ export const ar: Dict = {
   settings: {
     language: "اللغة",
     theme: "المظهر",
-    lightTheme: "التبديل إلى الوضع الفاتح",
-    darkTheme: "التبديل إلى الوضع الداكن",
+    lightTheme: "التبديل إلى المظهر الفاتح",
+    darkTheme: "التبديل إلى المظهر الداكن",
     textSize: "حجم نص المنشورات",
     textSizeSmall: "نص صغير",
     textSizeDefault: "حجم النص الافتراضي",
@@ -283,9 +320,9 @@ export const ar: Dict = {
     clearFilters: "مسح الفلاتر",
     connectTelegram: "ربط تيليغرام",
     searchPlaceholder: "ابحث في المنشورات والروابط والوسوم…",
-    copiedToClipboard: "تم نسخ {what} إلى الحافظة",
-    copyFailed: "تعذّر النسخ — الحافظة محجوبة في هذا المتصفح",
-    unknownError: "خطأ غير معروف",
+    copiedToClipboard: "نُسخ {what} إلى الحافظة",
+    copyFailed: "تعذّر النسخ: الحافظة محجوبة في هذا المتصفح",
+    unknownError: "خطأ غير متوقع، حاول مرة أخرى",
     loading: "جارٍ التحميل…",
   },
   nav: {
@@ -299,12 +336,12 @@ export const ar: Dict = {
     hero: {
       badge: "أرشيفك الشخصي عبر تيليغرام",
       title1: "أرسلها مرة واحدة.",
-      title2: "واحتفظ بها للأبد.",
-      sub: "تحوّل منشورات برقية تيليغرام إلى أرشيف شخصي. أرسل للبوت رابطًا أو ملاحظة أو مقتطفًا مع #وسوم، فيُنشر فورًا في فهرسك مصنَّفًا وقابلًا للبحث — وهو لك وحدك.",
+      title2: "واحتفظ بها إلى الأبد.",
+      sub: "تُحوِّل منشورات برقية تيليغرام إلى أرشيف شخصي. أرسل للبوت رابطًا أو ملاحظة أو مقتطفًا مع #وسوم، فيُنشر فورًا في فهرسك مصنَّفًا وقابلًا للبحث، وهو لك وحدك.",
       ctaPrimary: "افتح أرشيفك",
       ctaSecondary: "كيف يعمل",
-      bullets: ["لا لوحات تحكم لملئها", "استضافة مجانية جاهزة", "الإعداد في ٣ خطوات"],
-      archived: "تمت الأرشفة للتو",
+      bullets: ["لا لوحات تحكم لملئها", "استضافة مجانية جاهزة", "الإعداد في 3 خطوات"],
+      archived: "نُشر للتو",
       mockupNow: "الآن",
       mockupTitle: "قراءة رائعة عن دواخل Postgres",
       mockupChip: "12 منشورًا في #db",
@@ -316,30 +353,30 @@ export const ar: Dict = {
       items: [
         {
           title: "راسل البوت",
-          text: "افتح المحادثة مع بوتك وأرسل أي شيء — رابطًا يستحق الحفظ، فكرة، مقتطفًا، أو ملاحظة لنفسك.",
+          text: "افتح المحادثة مع بوتك وأرسل أي شيء: رابطًا يستحق الحفظ، فكرة، مقتطفًا، أو ملاحظة لنفسك.",
         },
         {
           title: "يُصنَّف تلقائيًا",
-          text: "تُحفظ الروابط مع نطاقها، وتُحتفظ بوسومك #، ويُشتق عنوان تلقائي — بأسلوب del.icio.us.",
+          text: "تُحفظ الروابط مع نطاقها، وتبقى وسومك كما كتبتها، ويُشتق العنوان تلقائيًا بأسلوب del.icio.us.",
         },
         {
           title: "تصفّح الأرشيف",
-          text: "يصل المنشور إلى فهرسك فورًا. ابحث عنه، أو صفِّه بالوسم، أو افتح صفحة تفاصيله — متى احتجت إليه.",
+          text: "يصل المنشور إلى فهرسك فورًا. ابحث عنه، أو صفِّه بالوسم، أو افتح صفحة تفاصيله متى احتجت إليه.",
         },
       ],
     },
     features: {
       kicker: "المميزات",
       title: "حفظ الإشارات بالشكل الصحيح",
-      text: "قوة التصنيف في del.icio.us و diigo، أعيد بناؤها لتناسب طريقة حفظك اليوم — داخل تيليغرام.",
+      text: "قوة التصنيف في del.icio.us وdiigo، أعيد بناؤها لتناسب طريقة حفظك اليوم، داخل تيليغرام.",
       items: [
         {
           title: "حفظ الروابط كإشارات مرجعية",
-          text: "كل رابط ترسله يتحول إلى إشارة مرجعية نظيفة مع نطاقها وعنوانها — كما كانت فكرة del.icio.us، دون الضجيج العام.",
+          text: "كل رابط ترسله يتحول إلى إشارة مرجعية نظيفة مع نطاقها وعنوانها، على طريقة del.icio.us، دون الضجيج العام.",
         },
         {
           title: "تصنيف بالوسوم",
-          text: "الوسوم الصريحة # ووسوم النطاق التلقائية تبقي كل شيء منظمًا بأسلوب diigo. صفِّ بأي وسم بنقرة واحدة.",
+          text: "وسومك الصريحة ووسوم النطاق التلقائية تُبقي كل شيء منظمًا بأسلوب diigo. صفِّ بأي وسم بنقرة واحدة.",
         },
         {
           title: "نشر فوري",
@@ -347,7 +384,7 @@ export const ar: Dict = {
         },
         {
           title: "خصوصية بالتصميم",
-          text: "الأرشيف محمي بتسجيل دخولك. لا ملف عام، لا خوارزميات، لا ضجيج — فقط إنترنتك الخاص المعلَّق عليه.",
+          text: "الأرشيف محمي بتسجيل دخولك. لا ملف عام، لا خوارزميات، لا ضجيج، فقط إنترنتك الخاص المعلَّق عليه.",
         },
         {
           title: "ابحث في كل شيء",
@@ -355,7 +392,7 @@ export const ar: Dict = {
         },
         {
           title: "انشر من المتصفح",
-          text: "لست قرب هاتفك؟ الصق رابطًا أو اكتب ملاحظة مباشرة في التطبيق — تُوسم وتُؤرشف تمامًا كرسالة تيليغرام.",
+          text: "لست قرب هاتفك؟ الصق رابطًا أو اكتب ملاحظة مباشرة في التطبيق، تُوسم وتُؤرشف تمامًا كرسالة تيليغرام.",
         },
       ],
     },
@@ -366,26 +403,26 @@ export const ar: Dict = {
       cta: "ابدأ الأرشفة",
     },
     cta: {
-      badge: "باقة مجانية للأبد",
+      badge: "باقة مجانية إلى الأبد",
       title: "رابطك المفيد التالي على بُعد {highlight}رسالة واحدة{highlight}",
-      text: "أنشئ بوتًا في دقيقتين، ضع الرمز، وابدأ النشر. كل رسالة ترسلها لنفسك هي إشارة مرجعية ستجدها لاحقًا فعلًا.",
+      text: "أنشئ بوتًا في دقيقتين، ضع الرمز، وابدأ النشر. كل رسالة ترسلها لنفسك إشارة مرجعية ستجدها لاحقًا.",
       primary: "ابدأ الآن",
       secondary: "سجّل الدخول إلى أرشيفك",
     },
     footer: {
-      builtOn: "مبني على تيليغرام وكونفيكس واستضافة مجانية · Vercel · Netlify · Cloudflare Pages",
+      builtOn: "مبني على تيليغرام وConvex واستضافة مجانية: Vercel، Netlify، Cloudflare Pages",
       botFather: "BotFather",
     },
   },
   auth: {
     title: "سجّل الدخول إلى أرشيفك",
     description:
-      "أدخل بريدك لتسجيل الدخول أو إنشاء حساب — منشورات برقية خاص، وأرشيفك لك وحدك.",
+      "أدخل بريدك لتسجيل الدخول أو إنشاء حساب، وأرشيفك خاص بك وحدك.",
     emailPlaceholder: "name@example.com",
     or: "أو",
     guest: "المتابعة كضيف",
     checkEmail: "تحقق من بريدك",
-    sentCode: "أرسلنا رمزًا إلى {email}",
+    sentCode: "أُرسل رمز التحقق إلى {email}",
     verify: "تحقق من الرمز",
     verifying: "جارٍ التحقق…",
     noCode: "لم يصلك رمز؟",
@@ -399,18 +436,24 @@ export const ar: Dict = {
   },
   dashboard: {
     feedTitle: "الأرشيف",
-    feedSubtitle: "كل ما نشرته — من تيليغرام أو من هنا مباشرة",
+    feedSubtitle: "كل ما نشرته، من تيليغرام أو من هنا مباشرة",
     types: { all: "الكل", links: "الروابط", notes: "الملاحظات" },
     loading: "جارٍ تحميل أرشيفك…",
     emptyNothing: "لا شيء مؤرشف بعد",
     emptyNoMatch: "لا نتائج مطابقة",
-    emptyText: "راسل بوت تيليغرام برابط أو ملاحظة — سيصل هنا موسومًا وجاهزًا. أو انشر شيئًا الآن.",
+    emptyText: "راسل بوت تيليغرام برابط أو ملاحظة، سيصل هنا موسومًا وجاهزًا. أو انشر شيئًا الآن.",
     emptyNoMatchText: "جرّب وسمًا أو نوعًا أو كلمة بحث مختلفة.",
     tagsTitle: "الوسوم",
-    tagsSubtitle: "{n} وسمًا في أرشيفك — اضغط أي وسم للتصفية",
+    tagsSubtitle: {
+      base: "{n} وسمًا في أرشيفك، اضغط أي وسم للتصفية",
+      one: "وسم واحد في أرشيفك، اضغط للتصفية",
+      two: "وسمان في أرشيفك، اضغط للتصفية",
+      few: "{n} وسوم في أرشيفك، اضغط أي وسم للتصفية",
+      many: "{n} وسمًا في أرشيفك، اضغط أي وسم للتصفية",
+    },
     noTagsTitle: "لا وسوم بعد",
     noTagsText:
-      "تظهر الوسوم هنا عند النشر — استخدم # في تيليغرام وستحصل الروابط على وسوم نطاق تلقائيًا.",
+      "تظهر الوسوم هنا عند النشر؛ استخدم # في تيليغرام، وستحصل الروابط على وسوم نطاق تلقائيًا.",
     telegramSubtitle: "اربط بوتك وابدأ النشر من هاتفك",
     privateOwner: "مالك الأرشيف الخاص",
     you: "أنت",
@@ -419,13 +462,19 @@ export const ar: Dict = {
     viaTelegram: "عبر تيليغرام",
     addedManually: "أُضيف يدويًا",
     openPost: "افتح المنشور",
-    moreLinks: "+{n} روابط أخرى",
+    moreLinks: {
+      base: "+{n} روابط أخرى",
+      one: "+1 رابط آخر",
+      two: "+رابطان آخران",
+      few: "+{n} روابط أخرى",
+      many: "+{n} رابطًا آخر",
+    },
     moreLink: "+1 رابط آخر",
   },
   postDetail: {
     loading: "جارٍ تحميل المنشور…",
     notFoundTitle: "المنشور غير موجود",
-    notFoundText: "هذا المنشور غير موجود أو لم يُنشر مطلقًا. عد إلى أرشيفك.",
+    notFoundText: "هذا المنشور غير موجود أو لم يُنشر أبدًا. عد إلى أرشيفك.",
     linkBookmark: "إشارة مرجعية",
     note: "ملاحظة",
     viaTelegram: "عبر تيليغرام",
@@ -441,24 +490,30 @@ export const ar: Dict = {
   composer: {
     title: "منشور جديد",
     description:
-      "انشر ملاحظة أو احفظ رابطًا — يُوسم ويُؤرشف فورًا، تمامًا كما في تيليغرام.",
+      "انشر ملاحظة أو احفظ رابطًا، يُوسم ويُؤرشف فورًا تمامًا كما في تيليغرام.",
     fieldTitle: "العنوان",
-    titlePlaceholder: "اختياري — سنشتق عنوانًا من النص أو النطاق",
+    titlePlaceholder: "اختياري، سنشتق عنوانًا من النص أو النطاق",
     fieldText: "النص",
     textPlaceholder: "فكرة، خلاصة، مقتطف يستحق الحفظ…",
     fieldUrl: "الرابط",
     urlPlaceholder: "https://… (الصق رابطًا لحفظه)",
     fieldTags: "الوسوم",
-    tagsPlaceholder: "برمجة، قراءة، #بوستجرس (مفصولة بفواصل أو مسافات)",
+    tagsPlaceholder: "برمجة، قراءة، #postgres (مفصولة بفواصل أو مسافات)",
     tagsHint: "يحصل الرابط على وسم نطاق تلقائيًا.",
     willBeLink: "سيُؤرشف كإشارة مرجعية لرابط",
     willBeNote: "سيُؤرشف كملاحظة",
-    chars: "{n} حرفًا",
+    chars: {
+      base: "{n} حرفًا",
+      one: "حرف واحد",
+      two: "حرفان",
+      few: "{n} أحرف",
+      many: "{n} حرفًا",
+    },
     publish: "نشر المنشور",
     publishing: "جارٍ النشر…",
-    toastPublished: "تم النشر في أرشيفك",
-    toastBookmarked: "تم حفظ {domain}",
-    toastNote: "تمت أرشفة الملاحظة",
+    toastPublished: "نُشر منشورك في أرشيفك",
+    toastBookmarked: "حُفظ الرابط {domain}",
+    toastNote: "حُفظت الملاحظة في أرشيفك",
     toastFailed: "تعذّر نشر المنشور",
     toastAddContent: "أضف ملاحظة أو رابطًا للنشر",
   },
@@ -469,22 +524,28 @@ export const ar: Dict = {
     statusFailed: "فشل فحص الحالة",
     tokenNotConfigured: "الرمز غير مضبوط بعد",
     addTokenHint: "أضف {code} إلى مفاتيح المشروع ثم اضغط تحديث.",
-    connectedAs: "متصل كـ @{username}",
-    tokenAccepted: "تم قبول الرمز",
-    webhookRegistered: "تم تسجيل الويب هوك",
+    connectedAs: "متصل باسم @{username}",
+    tokenAccepted: "قُبل الرمز",
+    webhookRegistered: "الويب هوك مسجّل",
     webhookNotRegistered: "غير مسجل",
     pendingOne: "تحديث معلق واحد في تيليغرام.",
-    pendingMany: "{n} تحديثات معلقة في تيليغرام.",
+    pendingMany: {
+      base: "{n} تحديثات معلقة في تيليغرام.",
+      one: "تحديث معلق واحد في تيليغرام.",
+      two: "تحديثان معلقان في تيليغرام.",
+      few: "{n} تحديثات معلقة في تيليغرام.",
+      many: "{n} تحديثًا معلقًا في تيليغرام.",
+    },
     lastError: "آخر خطأ في الويب هوك: {msg}",
-    setupTitle: "الإعداد في ٣ خطوات",
+    setupTitle: "الإعداد في 3 خطوات",
     steps: [
       {
         title: "أنشئ البوت",
-        text: "افتح @BotFather في تيليغرام وأرسل /newbot، ثم انسخ الرمز الذي تحصل عليه.",
+        text: "افتح @BotFather في تيليغرام وأرسل /newbot، ثم انسخ الرمز.",
       },
       {
         title: "أضف الرمز",
-        text: "الصق الرمز في مفاتيح المشروع باسم TELEGRAM_BOT_TOKEN (و TELEGRAM_WEBHOOK_SECRET اختياري).",
+        text: "الصق الرمز في مفاتيح المشروع باسم TELEGRAM_BOT_TOKEN (وTELEGRAM_WEBHOOK_SECRET اختياري).",
       },
       {
         title: "سجّل الويب هوك",
@@ -495,8 +556,8 @@ export const ar: Dict = {
     register: "تسجيل الويب هوك",
     registering: "جارٍ التسجيل…",
     afterRegister:
-      "بعد التسجيل، راسل بوتك في تيليغرام — يُنشر كل رابط أو ملاحظة ترسلها في أرشيفك فورًا.",
-    toastRegistered: "تم تسجيل الويب هوك",
+      "بعد التسجيل، راسل بوتك في تيليغرام، وسيُنشر كل رابط أو ملاحظة ترسلها في أرشيفك فورًا.",
+    toastRegistered: "الويب هوك مسجّل الآن",
     toastFailed: "تعذّر تسجيل الويب هوك",
     copyWebhookUrl: "نسخ رابط الويب هوك",
     couldNotReach: "تعذّر الوصول إلى البوت",
@@ -508,9 +569,9 @@ export const ar: Dict = {
   },
 };
 
-export type Lang = "en" | "ar";
+export type Lang = "ar" | "en";
 
-export const translations: Record<Lang, Dict> = { en, ar };
+export const translations: Record<Lang, Dict> = { ar, en };
 
 /** Replace {placeholders} in a template string. */
 export function fmt(template: string, params: Record<string, string | number>): string {
@@ -519,7 +580,17 @@ export function fmt(template: string, params: Record<string, string | number>): 
   );
 }
 
-/** Plural-aware helper for "{n} tag{s}" style templates. */
+/** Plural-aware helper for "{n} tag{s}" style templates (English). */
 export function plural(template: string, n: number): string {
   return template.replace("{n}", String(n)).replace("{s}", n === 1 ? "" : "s");
+}
+
+/**
+ * Arabic plural categories: 1 → one, 2 → two, 3–10 → few, 11+ → many.
+ * Returns the right form with {n} substituted.
+ */
+export function arPlural(forms: PluralForms, n: number): string {
+  const template =
+    n === 1 ? forms.one : n === 2 ? forms.two : n <= 10 ? forms.few : forms.many;
+  return template.replace("{n}", String(n));
 }

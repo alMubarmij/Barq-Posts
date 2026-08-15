@@ -2,6 +2,7 @@ import { POST_TEXT, useI18n, useTextSize } from "@/components/Settings";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { arPlural } from "@/lib/i18n";
 import {
   ChevronRight,
   ExternalLink,
@@ -93,10 +94,12 @@ export function PostCard({
           {post.links.length > 2 && (
             <span className={`px-1 font-medium text-muted-foreground ${tx.tag}`}>
               {post.links.length - 2 > 1
-                ? dict.postCard.moreLinks.replace(
-                    "{n}",
-                    String(post.links.length - 2),
-                  )
+                ? isAr
+                  ? arPlural(pc.moreLinks, post.links.length - 2)
+                  : pc.moreLinks.base.replace(
+                      "{n}",
+                      String(post.links.length - 2),
+                    )
                 : pc.moreLink}
             </span>
           )}
