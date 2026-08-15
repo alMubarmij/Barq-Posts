@@ -132,7 +132,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       <Logo />
                     </Link>
                   </div>
-                  <CardTitle className="text-xl">{a.title}</CardTitle>
+                  <CardTitle className="font-heading text-xl">{a.title}</CardTitle>
                   <CardDescription>{a.description}</CardDescription>
                 </CardHeader>
                 <form onSubmit={handleEmailSubmit}>
@@ -196,7 +196,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             ) : (
               <>
                 <CardHeader className="mt-4 text-center">
-                  <CardTitle>{a.checkEmail}</CardTitle>
+                  <CardTitle className="font-heading">{a.checkEmail}</CardTitle>
                   <CardDescription>
                     {fmt(a.sentCode, { email: step.email })}
                   </CardDescription>

@@ -42,6 +42,16 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Typography tokens — Cairo for headings/subheadings/links, Tajawal for body.
+   Overrides Tailwind's default sans so body text is Tajawal everywhere, and
+   generates the `font-heading` utility for Cairo. */
+@theme {
+  --font-sans: "Tajawal", "Segoe UI", Tahoma, ui-sans-serif, system-ui,
+    sans-serif;
+  --font-heading: "Cairo", "Tajawal", "Segoe UI", Tahoma, ui-sans-serif,
+    system-ui, sans-serif;
+}
+
 /* CHANGE VALUES FOR THEME — light glassmorphism (default) */
 :root {
   --radius: 0.875rem;
@@ -169,6 +179,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
     background-image:
       radial-gradient(
         1100px 700px at 88% -8%,
@@ -210,6 +221,18 @@
   button:not([disabled]),
   [role="button"]:not([disabled]) {
     cursor: pointer;
+  }
+
+  /* Typography spec: Cairo for headings, subheadings and links; Tajawal body. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  button {
+    font-family: var(--font-heading);
   }
 }
 

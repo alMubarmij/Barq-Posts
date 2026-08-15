@@ -26,7 +26,7 @@ export default function NotFound() {
           transition={{ delay: 0.15, duration: 0.5 }}
           className="glass-strong mt-8 w-full max-w-md rounded-3xl p-10 text-center"
         >
-          <p className="text-6xl font-black text-gradient-cool">404</p>
+          <p className="font-heading text-6xl font-black text-gradient-cool">404</p>
           <h1 className="mt-3 text-xl font-bold">{dict.notFound.title}</h1>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {dict.notFound.text}

@@ -228,7 +228,7 @@ export default function Landing() {
                     {d.hero.archived}
                   </Badge>
                 </div>
-                <p className="mt-4 text-sm font-semibold leading-6 text-foreground">
+                <p className="font-heading mt-4 text-sm font-semibold leading-6 text-foreground">
                   {d.hero.mockupTitle}
                 </p>
                 <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
