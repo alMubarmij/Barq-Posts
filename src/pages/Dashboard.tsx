@@ -2,12 +2,19 @@ import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
 import { PostCard } from "@/components/PostCard";
 import { PostComposer } from "@/components/PostComposer";
+import {
+  LanguageToggle,
+  TextSizeControls,
+  ThemeToggle,
+  useI18n,
+} from "@/components/Settings";
 import { TelegramSetup } from "@/components/TelegramSetup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth";
+import { plural } from "@/lib/i18n";
 import { useQuery } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -28,16 +35,11 @@ import { Link, useNavigate, useSearchParams } from "react-router";
 type View = "feed" | "tags" | "telegram";
 type TypeFilter = "all" | "link" | "message";
 
-const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
-  { id: "feed", label: "Archive", icon: Archive },
-  { id: "tags", label: "Tags", icon: Tags },
-  { id: "telegram", label: "Telegram", icon: Send },
-];
-
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { dict } = useI18n();
   const posts = useQuery(api.posts.list);
 
   const [view, setView] = useState<View>("feed");
@@ -47,6 +49,12 @@ export default function Dashboard() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [search, setSearch] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
+
+  const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
+    { id: "feed", label: dict.nav.archive, icon: Archive },
+    { id: "tags", label: dict.nav.tags, icon: Tags },
+    { id: "telegram", label: dict.nav.telegram, icon: Send },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
@@ -113,7 +121,7 @@ export default function Dashboard() {
       <div className="mx-auto flex w-[min(100%-1.25rem,96rem)] flex-col gap-4 py-4 lg:flex-row lg:gap-5">
         {/* Desktop sidebar */}
         <aside className="glass-strong sticky top-4 hidden h-[calc(100vh-2rem)] w-60 shrink-0 flex-col rounded-3xl p-4 lg:flex">
-          <Link to="/" aria-label="Barq home">
+          <Link to="/" aria-label={dict.brand.home}>
             <Logo />
           </Link>
 
@@ -143,8 +151,8 @@ export default function Dashboard() {
                     <span
                       className={
                         active
-                          ? "ml-auto rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-bold"
-                          : "ml-auto rounded-full bg-background/70 px-2 py-0.5 text-[11px] font-bold text-muted-foreground"
+                          ? "ms-auto rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-bold"
+                          : "ms-auto rounded-full bg-background/70 px-2 py-0.5 text-[11px] font-bold text-muted-foreground"
                       }
                     >
                       {badge}
@@ -161,8 +169,13 @@ export default function Dashboard() {
             onClick={() => setComposerOpen(true)}
           >
             <Plus className="size-4" />
-            New post
+            {dict.common.newPost}
           </Button>
+
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
 
           <div className="mt-auto space-y-3">
             <div className="glass-chip flex items-center gap-2.5 rounded-2xl p-2.5">
@@ -171,10 +184,10 @@ export default function Dashboard() {
               </span>
               <div className="min-w-0">
                 <p className="truncate text-xs font-bold text-foreground">
-                  {user?.name ?? user?.email ?? "You"}
+                  {user?.name ?? user?.email ?? dict.dashboard.you}
                 </p>
                 <p className="truncate font-mono text-[10px] text-muted-foreground">
-                  {user?.email ?? "Private archive owner"}
+                  {user?.email ?? dict.dashboard.privateOwner}
                 </p>
               </div>
             </div>
@@ -185,7 +198,7 @@ export default function Dashboard() {
               onClick={handleSignOut}
             >
               <LogOut className="size-4" />
-              Sign out
+              {dict.common.signOut}
             </Button>
           </div>
         </aside>
@@ -193,11 +206,37 @@ export default function Dashboard() {
         {/* Main column */}
         <div className="min-w-0 flex-1">
           {/* Mobile top bar */}
-          <div className="glass-strong sticky top-3 z-30 mb-4 flex items-center justify-between gap-2 rounded-2xl px-3 py-2 lg:hidden">
-            <Link to="/" aria-label="Barq home">
-              <Logo iconOnly />
-            </Link>
-            <div className="flex items-center gap-1">
+          <div className="glass-strong sticky top-3 z-30 mb-4 rounded-2xl px-3 py-2 lg:hidden">
+            <div className="flex items-center justify-between gap-2">
+              <Link to="/" aria-label={dict.brand.home}>
+                <Logo iconOnly />
+              </Link>
+              <div className="flex items-center gap-1.5">
+                <LanguageToggle />
+                <ThemeToggle />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 cursor-pointer rounded-lg"
+                  onClick={() => setComposerOpen(true)}
+                  aria-label={dict.common.newPost}
+                >
+                  <Plus className="size-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 cursor-pointer rounded-lg"
+                  onClick={handleSignOut}
+                  aria-label={dict.common.signOut}
+                >
+                  <LogOut className="size-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="mt-2 flex items-center gap-1 overflow-x-auto">
               {NAV.map((item) => (
                 <button
                   key={item.id}
@@ -205,8 +244,8 @@ export default function Dashboard() {
                   onClick={() => setView(item.id)}
                   className={
                     view === item.id
-                      ? "flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary"
-                      : "flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground"
+                      ? "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary"
+                      : "flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground"
                   }
                 >
                   <item.icon className="size-3.5" />
@@ -214,26 +253,6 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="size-8 cursor-pointer rounded-lg"
-              onClick={() => setComposerOpen(true)}
-              aria-label="New post"
-            >
-              <Plus className="size-4" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="size-8 cursor-pointer rounded-lg"
-              onClick={handleSignOut}
-              aria-label="Sign out"
-            >
-              <LogOut className="size-4" />
-            </Button>
           </div>
 
           <main className="mx-auto w-full max-w-4xl pb-16">
@@ -278,8 +297,8 @@ export default function Dashboard() {
                 {view === "telegram" && (
                   <div>
                     <Header
-                      title="Telegram"
-                      subtitle="Connect your bot and start publishing from your phone"
+                      title={dict.nav.telegram}
+                      subtitle={dict.dashboard.telegramSubtitle}
                     />
                     <TelegramSetup />
                   </div>
@@ -298,7 +317,7 @@ export default function Dashboard() {
 function Header({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="mb-5">
-      <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
+      <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
     </div>
   );
@@ -339,31 +358,30 @@ function FeedView({
   onNewPost: () => void;
   onGoToTelegram: () => void;
 }) {
+  const { dict } = useI18n();
+  const dd = dict.dashboard;
   const types: { id: TypeFilter; label: string; count: number }[] = [
-    { id: "all", label: "All", count: allCount },
-    { id: "link", label: "Links", count: linkCount },
-    { id: "message", label: "Notes", count: noteCount },
+    { id: "all", label: dd.types.all, count: allCount },
+    { id: "link", label: dd.types.links, count: linkCount },
+    { id: "message", label: dd.types.notes, count: noteCount },
   ];
 
   return (
     <div>
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Archive
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Everything you&apos;ve published — from Telegram or right here
-          </p>
+          <h1 className="text-2xl font-bold sm:text-3xl">{dd.feedTitle}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{dd.feedSubtitle}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+        <div className="flex flex-wrap items-center gap-2">
+          <TextSizeControls />
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute start-3 top-2.5 size-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => onSearch(e.target.value)}
-              placeholder="Search posts, links, tags…"
-              className="glass-chip rounded-xl pl-9"
+              placeholder={dict.common.searchPlaceholder}
+              className="glass-chip rounded-xl ps-9"
             />
           </div>
           <Button
@@ -372,7 +390,7 @@ function FeedView({
             onClick={onNewPost}
           >
             <Plus className="size-4" />
-            New post
+            {dict.common.newPost}
           </Button>
         </div>
       </div>
@@ -430,9 +448,9 @@ function FeedView({
             <button
               type="button"
               onClick={onClearFilters}
-              className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/10"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
             >
-              <X className="size-3" /> Clear
+              <X className="size-3" /> {dict.common.clearFilters}
             </button>
           )}
         </div>
@@ -442,20 +460,18 @@ function FeedView({
       {loading ? (
         <div className="glass-panel flex items-center justify-center gap-2 rounded-3xl py-20 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" />
-          Loading your archive…
+          {dd.loading}
         </div>
       ) : posts.length === 0 ? (
         <div className="glass-panel rounded-3xl px-6 py-16 text-center">
           <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white">
             <Archive className="size-6" />
           </span>
-          <h3 className="mt-5 text-lg font-bold tracking-tight">
-            {hasAnyPosts ? "Nothing matches" : "Nothing archived yet"}
+          <h3 className="mt-5 text-lg font-bold">
+            {hasAnyPosts ? dd.emptyNoMatch : dd.emptyNothing}
           </h3>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-            {hasAnyPosts
-              ? "Try a different tag, type or search term."
-              : "Message your Telegram bot with a link or a note — it lands here, tagged and ready. Or publish something right now."}
+            {hasAnyPosts ? dd.emptyNoMatchText : dd.emptyText}
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             {hasAnyPosts ? (
@@ -465,7 +481,7 @@ function FeedView({
                 className="glass-chip cursor-pointer rounded-xl"
                 onClick={onClearFilters}
               >
-                Clear filters
+                {dict.common.clearFilters}
               </Button>
             ) : (
               <>
@@ -475,7 +491,7 @@ function FeedView({
                   onClick={onNewPost}
                 >
                   <Plus className="size-4" />
-                  New post
+                  {dict.common.newPost}
                 </Button>
                 <Button
                   type="button"
@@ -484,7 +500,7 @@ function FeedView({
                   onClick={onGoToTelegram}
                 >
                   <Send className="size-4" />
-                  Connect Telegram
+                  {dict.common.connectTelegram}
                 </Button>
               </>
             )}
@@ -517,21 +533,22 @@ function TagsView({
   maxCount: number;
   onTagClick: (tag: string) => void;
 }) {
+  const { dict } = useI18n();
+  const dd = dict.dashboard;
   return (
     <div>
       <Header
-        title="Tags"
-        subtitle={`${tagCounts.length} tag${tagCounts.length === 1 ? "" : "s"} across your archive — click one to filter`}
+        title={dd.tagsTitle}
+        subtitle={plural(dd.tagsSubtitle, tagCounts.length)}
       />
       {tagCounts.length === 0 ? (
         <div className="glass-panel rounded-3xl px-6 py-16 text-center">
           <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-accent text-primary">
             <Tags className="size-6" />
           </span>
-          <h3 className="mt-5 text-lg font-bold tracking-tight">No tags yet</h3>
+          <h3 className="mt-5 text-lg font-bold">{dd.noTagsTitle}</h3>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-            Tags appear here as you publish — use #hashtags in Telegram and
-            links get domain tags automatically.
+            {dd.noTagsText}
           </p>
         </div>
       ) : (
@@ -548,7 +565,7 @@ function TagsView({
                 fontSize: `${11 + (count / maxCount) * 9}px`,
               }}
               className="glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-3.5 py-1.5 font-semibold text-primary transition-all hover:bg-primary/10"
-              title={`${count} post${count === 1 ? "" : "s"}`}
+              title={`${count}`}
             >
               <Hash className="size-3.5" />
               {tag}

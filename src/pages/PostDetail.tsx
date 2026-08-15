@@ -1,11 +1,21 @@
 import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
+import {
+  LanguageToggle,
+  POST_TEXT,
+  TextSizeControls,
+  ThemeToggle,
+  useI18n,
+  useTextSize,
+} from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth";
+import { fmt } from "@/lib/i18n";
 import { useQuery } from "convex/react";
 import { format } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -26,6 +36,9 @@ export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { dict, isAr } = useI18n();
+  const { textSize } = useTextSize();
+  const pd = dict.postDetail;
   const post = useQuery(
     api.posts.get,
     id ? { id: id as Id<"posts"> } : "skip",
@@ -36,12 +49,12 @@ export default function PostDetail() {
     navigate("/");
   };
 
-  const copyText = async (text: string, label: string) => {
+  const copyText = async (text: string, what: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast(`Copied ${label} to clipboard`);
+      toast(fmt(dict.common.copiedToClipboard, { what }));
     } catch {
-      toast("Could not copy — clipboard blocked in this browser");
+      toast(dict.common.copyFailed);
     }
   };
 
@@ -51,11 +64,13 @@ export default function PostDetail() {
 
       {/* Top bar */}
       <header className="sticky top-3 z-40 mx-auto mt-4 w-[min(100%-1.25rem,72rem)]">
-        <div className="glass-strong flex items-center justify-between rounded-2xl px-4 py-2.5 sm:px-5">
-          <Link to="/" aria-label="Back to home">
+        <div className="glass-strong flex items-center justify-between gap-3 rounded-2xl px-4 py-2.5 sm:px-5">
+          <Link to="/" aria-label={dict.brand.home}>
             <Logo />
           </Link>
           <div className="flex items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
             <Button
               asChild
               variant="ghost"
@@ -63,8 +78,8 @@ export default function PostDetail() {
               className="hidden cursor-pointer rounded-xl text-muted-foreground sm:inline-flex"
             >
               <Link to="/dashboard">
-                <ArrowLeft className="size-4" />
-                Archive
+                <ArrowLeft className="size-4 rtl:rotate-180" />
+                {dict.common.backToArchive}
               </Link>
             </Button>
             <Button
@@ -75,41 +90,42 @@ export default function PostDetail() {
               onClick={handleSignOut}
             >
               <LogOut className="size-4" />
-              <span className="hidden sm:inline">Sign out</span>
+              <span className="hidden sm:inline">{dict.common.signOut}</span>
             </Button>
           </div>
         </div>
       </header>
 
       <main className="mx-auto w-[min(100%-1.25rem,48rem)] pb-24 pt-8">
-        <Link
-          to="/dashboard"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          Back to archive
-        </Link>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="size-4 rtl:rotate-180" />
+            {dict.common.backToArchive}
+          </Link>
+          <TextSizeControls />
+        </div>
 
         {post === undefined ? (
           <div className="glass-panel flex items-center justify-center gap-2 rounded-3xl py-24 text-sm text-muted-foreground">
             <Loader2 className="size-4 animate-spin" />
-            Loading post…
+            {pd.loading}
           </div>
         ) : post === null ? (
           <div className="glass-panel rounded-3xl px-6 py-16 text-center">
             <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-accent text-primary">
               <Terminal className="size-6" />
             </span>
-            <h1 className="mt-5 text-xl font-bold tracking-tight">
-              Post not found
-            </h1>
+            <h1 className="mt-5 text-xl font-bold">{pd.notFoundTitle}</h1>
             <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-              This post doesn&apos;t exist or was never published. Head back to
-              your archive.
+              {pd.notFoundText}
             </p>
             <Button asChild className="mt-6 cursor-pointer rounded-xl">
               <Link to="/dashboard">
-                Back to archive <ArrowLeft className="size-4" />
+                {dict.common.backToArchive}{" "}
+                <ArrowLeft className="size-4 rtl:rotate-180" />
               </Link>
             </Button>
           </div>
@@ -138,25 +154,31 @@ export default function PostDetail() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="glass-chip inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-primary">
-                    {post.type === "link" ? "Link bookmark" : "Note"}
+                    {post.type === "link" ? pd.linkBookmark : pd.note}
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                     <Send className="size-3" />
-                    {post.source !== "web" ? "Via Telegram" : "Added manually"}
+                    {post.source !== "web" ? pd.viaTelegram : pd.addedManually}
                   </span>
                 </div>
-                <h1 className="mt-2.5 text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+                <h1
+                  className={`mt-2.5 font-bold leading-tight ${POST_TEXT[textSize].detail.heading}`}
+                >
                   {post.title}
                 </h1>
                 <p className="mt-2 text-xs font-medium text-muted-foreground">
-                  {format(post.publishedAt, "MMMM d, yyyy · HH:mm")}
+                  {format(post.publishedAt, "MMMM d, yyyy · HH:mm", {
+                    locale: isAr ? ar : enUS,
+                  })}
                 </p>
               </div>
             </div>
 
             {/* Body */}
             {post.text && (
-              <p className="mt-7 whitespace-pre-wrap text-[15px] leading-8 text-foreground/90">
+              <p
+                className={`mt-7 whitespace-pre-wrap text-foreground/90 ${POST_TEXT[textSize].detail.body}`}
+              >
                 {post.text}
               </p>
             )}
@@ -165,7 +187,7 @@ export default function PostDetail() {
             {post.links.length > 0 && (
               <div className="mt-8">
                 <p className="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                  Links
+                  {pd.links}
                 </p>
                 <div className="flex flex-col gap-2">
                   {post.links.map((link) => (
@@ -191,7 +213,7 @@ export default function PostDetail() {
                         type="button"
                         onClick={() => copyText(link.url, "link")}
                         className="cursor-pointer rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                        aria-label="Copy link"
+                        aria-label={pd.copyLink}
                       >
                         <Copy className="size-4" />
                       </button>
@@ -205,7 +227,7 @@ export default function PostDetail() {
             {post.tags.length > 0 && (
               <div className="mt-8">
                 <p className="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                  Tags
+                  {pd.tags}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {post.tags.map((tag) => (
@@ -232,7 +254,7 @@ export default function PostDetail() {
                 onClick={() => copyText(post.text, "post text")}
               >
                 <Copy className="size-3.5" />
-                Copy text
+                {pd.copyText}
               </Button>
               {post.links.length > 0 && (
                 <>
@@ -248,7 +270,7 @@ export default function PostDetail() {
                       rel="noopener noreferrer"
                     >
                       <ExternalLink className="size-3.5" />
-                      Open link
+                      {pd.openLink}
                     </a>
                   </Button>
                   <Button
@@ -259,7 +281,7 @@ export default function PostDetail() {
                     onClick={() => copyText(post.links[0].url, "link")}
                   >
                     <Link2 className="size-3.5" />
-                    Copy link
+                    {pd.copyLink}
                   </Button>
                 </>
               )}

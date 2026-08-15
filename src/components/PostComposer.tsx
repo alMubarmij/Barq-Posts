@@ -1,4 +1,5 @@
 import { api } from "@/convex/_generated/api";
+import { useI18n } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { fmt } from "@/lib/i18n";
 import { useMutation } from "convex/react";
 import { useState } from "react";
 import {
@@ -80,6 +82,8 @@ export function PostComposer({
   onOpenChange: (open: boolean) => void;
 }) {
   const createPost = useMutation(api.posts.create);
+  const { dict } = useI18n();
+  const c = dict.composer;
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
@@ -99,7 +103,7 @@ export function PostComposer({
     const body = text.trim();
     const parsedTags = parseTags(tags);
     if (!body && links.length === 0) {
-      toast.error("Add a note or a link to publish");
+      toast.error(c.toastAddContent);
       return;
     }
     setPublishing(true);
@@ -110,10 +114,10 @@ export function PostComposer({
         links,
         tags: parsedTags,
       });
-      toast("Published to your archive", {
+      toast(c.toastPublished, {
         description: willBeLink
-          ? `Bookmarked ${links[0].domain}`
-          : "Note archived",
+          ? fmt(c.toastBookmarked, { domain: links[0].domain })
+          : c.toastNote,
       });
       setTitle("");
       setText("");
@@ -121,7 +125,7 @@ export function PostComposer({
       setTags("");
       onOpenChange(false);
     } catch (err) {
-      toast.error("Could not publish post", {
+      toast.error(c.toastFailed, {
         description: err instanceof Error ? err.message : "Unknown error",
       });
     } finally {
@@ -133,66 +137,61 @@ export function PostComposer({
     <Dialog open={open} onOpenChange={close}>
       <DialogContent className="glass-strong max-h-[90vh] overflow-y-auto rounded-3xl sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle className="text-lg">New post</DialogTitle>
-          <DialogDescription>
-            Publish a note or bookmark a link — tagged and archived instantly,
-            just like Telegram.
-          </DialogDescription>
+          <DialogTitle className="text-lg">{c.title}</DialogTitle>
+          <DialogDescription>{c.description}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="composer-title">Title</Label>
+            <Label htmlFor="composer-title">{c.fieldTitle}</Label>
             <Input
               id="composer-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Optional — we'll derive one from the text or domain"
+              placeholder={c.titlePlaceholder}
               className="glass-chip rounded-xl"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="composer-text">Text</Label>
+            <Label htmlFor="composer-text">{c.fieldText}</Label>
             <Textarea
               id="composer-text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={5}
-              placeholder="A thought, a summary, a snippet worth keeping…"
+              placeholder={c.textPlaceholder}
               className="glass-chip rounded-xl"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="composer-url">URL</Label>
+            <Label htmlFor="composer-url">{c.fieldUrl}</Label>
             <div className="relative">
-              <Link2 className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+              <Link2 className="absolute start-3 top-2.5 size-4 text-muted-foreground" />
               <Input
                 id="composer-url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://… (paste a link to bookmark it)"
-                className="glass-chip rounded-xl pl-9"
+                placeholder={c.urlPlaceholder}
+                className="glass-chip rounded-xl ps-9"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="composer-tags">Tags</Label>
+            <Label htmlFor="composer-tags">{c.fieldTags}</Label>
             <div className="relative">
-              <Hash className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+              <Hash className="absolute start-3 top-2.5 size-4 text-muted-foreground" />
               <Input
                 id="composer-tags"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                placeholder="dev, reading, #postgres (comma or space separated)"
-                className="glass-chip rounded-xl pl-9"
+                placeholder={c.tagsPlaceholder}
+                className="glass-chip rounded-xl ps-9"
               />
             </div>
-            <p className="text-[11px] text-muted-foreground">
-              A link earns its domain tag automatically.
-            </p>
+            <p className="text-[11px] text-muted-foreground">{c.tagsHint}</p>
           </div>
 
           <div className="flex items-center justify-between gap-2 pt-1">
@@ -200,17 +199,17 @@ export function PostComposer({
               {willBeLink ? (
                 <>
                   <Link2 className="size-3 text-primary" />
-                  Will be archived as a link bookmark
+                  {c.willBeLink}
                 </>
               ) : (
                 <>
                   <MessageSquare className="size-3 text-primary" />
-                  Will be archived as a note
+                  {c.willBeNote}
                 </>
               )}
             </span>
             <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
-              {text.length} chars
+              {fmt(c.chars, { n: text.length })}
             </span>
           </div>
 
@@ -222,7 +221,7 @@ export function PostComposer({
               disabled={publishing}
               className="cursor-pointer rounded-xl"
             >
-              Cancel
+              {dict.common.cancel}
             </Button>
             <Button
               type="submit"
@@ -232,12 +231,12 @@ export function PostComposer({
               {publishing ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  Publishing…
+                  {c.publishing}
                 </>
               ) : (
                 <>
                   <Send className="size-4" />
-                  Publish post
+                  {c.publish}
                 </>
               )}
             </Button>

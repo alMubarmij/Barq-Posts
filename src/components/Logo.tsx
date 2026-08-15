@@ -1,3 +1,4 @@
+import { useI18n } from "@/components/Settings";
 import { cn } from "@/lib/utils";
 import { Send } from "lucide-react";
 
@@ -8,6 +9,7 @@ export function Logo({
   className?: string;
   iconOnly?: boolean;
 }) {
+  const { dict } = useI18n();
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <span className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white shadow-[0_8px_20px_-8px_oklch(0.7_0.14_215/0.6)]">
@@ -20,7 +22,7 @@ export function Logo({
             منشورات برقية
           </span>
           <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-            Barq · Telegram archive
+            {dict.brand.tagline}
           </span>
         </span>
       )}

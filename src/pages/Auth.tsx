@@ -1,5 +1,6 @@
 import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
+import { LanguageToggle, ThemeToggle, useI18n } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/input-otp";
 
 import { useAuth } from "@/hooks/use-auth";
+import { fmt } from "@/lib/i18n";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
@@ -39,6 +41,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { dict } = useI18n();
+  const a = dict.auth;
   const redirect = resolveRedirectAfterAuth(
     searchParams.get("returnTo"),
     redirectAfterAuth,
@@ -111,6 +115,11 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     <div className="relative flex min-h-screen flex-col">
       <BackgroundFX />
 
+      <div className="absolute end-4 top-4 z-20 flex items-center gap-2">
+        <LanguageToggle />
+        <ThemeToggle />
+      </div>
+
       {/* Auth Content */}
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-[26rem]">
@@ -119,26 +128,23 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               <>
                 <CardHeader className="text-center">
                   <div className="mb-5 flex justify-center">
-                    <Link to="/" aria-label="Back to home">
+                    <Link to="/" aria-label={dict.brand.home}>
                       <Logo />
                     </Link>
                   </div>
-                  <CardTitle className="text-xl">Sign in to your archive</CardTitle>
-                  <CardDescription>
-                    Enter your email to log in or sign up — منشورات برقية is
-                    private, and the archive is yours alone
-                  </CardDescription>
+                  <CardTitle className="text-xl">{a.title}</CardTitle>
+                  <CardDescription>{a.description}</CardDescription>
                 </CardHeader>
                 <form onSubmit={handleEmailSubmit}>
                   <CardContent>
                     <div className="relative flex items-center gap-2">
                       <div className="relative flex-1">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Mail className="absolute start-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           name="email"
-                          placeholder="name@example.com"
+                          placeholder={a.emailPlaceholder}
                           type="email"
-                          className="pl-9 rounded-xl"
+                          className="rounded-xl ps-9"
                           disabled={isLoading}
                           required
                         />
@@ -153,7 +159,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
-                          <ArrowRight className="h-4 w-4" />
+                          <ArrowRight className="h-4 w-4 rtl:rotate-180" />
                         )}
                       </Button>
                     </div>
@@ -168,7 +174,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                           <span className="bg-background/80 px-2 text-muted-foreground">
-                            Or
+                            {a.or}
                           </span>
                         </div>
                       </div>
@@ -180,8 +186,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         onClick={handleGuestLogin}
                         disabled={isLoading}
                       >
-                        <UserX className="mr-2 h-4 w-4" />
-                        Continue as guest
+                        <UserX className="me-2 h-4 w-4" />
+                        {a.guest}
                       </Button>
                     </div>
                   </CardContent>
@@ -190,9 +196,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             ) : (
               <>
                 <CardHeader className="mt-4 text-center">
-                  <CardTitle>Check your email</CardTitle>
+                  <CardTitle>{a.checkEmail}</CardTitle>
                   <CardDescription>
-                    We&apos;ve sent a code to {step.email}
+                    {fmt(a.sentCode, { email: step.email })}
                   </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleOtpSubmit}>
@@ -223,18 +229,18 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       </InputOTP>
                     </div>
                     {error && (
-                      <p className="mt-2 text-sm text-red-500 text-center">
+                      <p className="mt-2 text-center text-sm text-red-500">
                         {error}
                       </p>
                     )}
                     <p className="mt-4 text-center text-sm text-muted-foreground">
-                      Didn&apos;t receive a code?{" "}
+                      {a.noCode}{" "}
                       <Button
                         variant="link"
                         className="h-auto cursor-pointer p-0"
                         onClick={() => setStep("signIn")}
                       >
-                        Try again
+                        {a.tryAgain}
                       </Button>
                     </p>
                   </CardContent>
@@ -246,13 +252,13 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                     >
                       {isLoading ? (
                         <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Verifying...
+                          <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                          {a.verifying}
                         </>
                       ) : (
                         <>
-                          Verify code
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          {a.verify}
+                          <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
                         </>
                       )}
                     </Button>
@@ -263,7 +269,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       disabled={isLoading}
                       className="w-full cursor-pointer"
                     >
-                      Use different email
+                      {a.differentEmail}
                     </Button>
                   </CardFooter>
                 </form>
@@ -271,7 +277,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             )}
 
             <div className="rounded-b-3xl border-t bg-background/60 px-6 py-4 text-center text-xs text-muted-foreground">
-              Secured by{" "}
+              {a.securedBy}{" "}
               <a
                 href="https://freebuff.com"
                 target="_blank"
@@ -283,9 +289,12 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </div>
           </Card>
           <p className="mt-5 text-center text-xs text-muted-foreground">
-            <Link to="/" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
-              <ArrowRight className="size-3 rotate-180" />
-              Back to the landing page
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              <ArrowRight className="size-3 rotate-180 rtl:rotate-0" />
+              {a.backToLanding}
             </Link>
           </p>
         </div>

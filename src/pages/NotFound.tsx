@@ -1,11 +1,13 @@
 import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
+import { useI18n } from "@/components/Settings";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 
 export default function NotFound() {
+  const { dict } = useI18n();
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -15,7 +17,7 @@ export default function NotFound() {
     >
       <BackgroundFX />
       <div className="flex flex-1 flex-col items-center justify-center px-4">
-        <Link to="/" aria-label="Barq home">
+        <Link to="/" aria-label={dict.brand.home}>
           <Logo />
         </Link>
         <motion.div
@@ -24,14 +26,14 @@ export default function NotFound() {
           transition={{ delay: 0.15, duration: 0.5 }}
           className="glass-strong mt-8 w-full max-w-md rounded-3xl p-10 text-center"
         >
-          <p className="text-6xl font-black tracking-tight text-gradient-cool">404</p>
-          <h1 className="mt-3 text-xl font-bold tracking-tight">Page not found</h1>
+          <p className="text-6xl font-black text-gradient-cool">404</p>
+          <h1 className="mt-3 text-xl font-bold">{dict.notFound.title}</h1>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            This link didn&apos;t land in your archive. Head back to the catalog.
+            {dict.notFound.text}
           </p>
           <Button asChild className="mt-6 cursor-pointer rounded-xl">
             <Link to="/dashboard">
-              Back to the archive <ArrowRight className="size-4" />
+              {dict.notFound.back} <ArrowRight className="size-4 rtl:rotate-180" />
             </Link>
           </Button>
         </motion.div>

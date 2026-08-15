@@ -1,5 +1,7 @@
+import { POST_TEXT, useI18n, useTextSize } from "@/components/Settings";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { formatDistanceToNow } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
 import {
   ChevronRight,
   ExternalLink,
@@ -18,6 +20,10 @@ export function PostCard({
   onTagClick: (tag: string) => void;
 }) {
   const navigate = useNavigate();
+  const { dict, isAr } = useI18n();
+  const { textSize } = useTextSize();
+  const pc = dict.postCard;
+  const tx = POST_TEXT[textSize].card;
   const isLink = post.type === "link";
 
   const open = () => navigate(`/post/${post._id}`);
@@ -30,7 +36,7 @@ export function PostCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") open();
       }}
-      className="glass-panel group w-full cursor-pointer rounded-2xl p-5 text-left transition-all duration-200 hover:border-white/20 hover:bg-white/[0.04]"
+      className="glass-panel group w-full cursor-pointer rounded-2xl p-5 text-start transition-all duration-200 hover:border-white/90 hover:bg-white/75 dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
@@ -47,17 +53,20 @@ export function PostCard({
               <MessageSquare className="size-4" />
             )}
           </span>
-          <h3 className="truncate text-sm font-bold tracking-tight text-foreground">
+          <h3 className={`truncate font-bold text-foreground ${tx.title}`}>
             {post.title}
           </h3>
         </div>
         <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
-          {formatDistanceToNow(post.publishedAt, { addSuffix: true })}
+          {formatDistanceToNow(post.publishedAt, {
+            addSuffix: true,
+            locale: isAr ? ar : enUS,
+          })}
         </span>
       </div>
 
       {post.text && (
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+        <p className={`mt-3 line-clamp-3 text-muted-foreground ${tx.body}`}>
           {post.text}
         </p>
       )}
@@ -71,16 +80,21 @@ export function PostCard({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="glass-chip inline-flex max-w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-primary"
+              className={`glass-chip inline-flex max-w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-muted-foreground transition-colors hover:text-primary ${tx.link}`}
             >
               <ExternalLink className="size-3.5 shrink-0 text-primary/70" />
               <span className="truncate font-semibold">{link.domain}</span>
-              <span className="truncate font-mono text-[11px]">{link.url}</span>
+              <span className="truncate font-mono">{link.url}</span>
             </a>
           ))}
           {post.links.length > 2 && (
-            <span className="px-1 text-[11px] font-medium text-muted-foreground">
-              +{post.links.length - 2} more link{post.links.length - 2 > 1 ? "s" : ""}
+            <span className={`px-1 font-medium text-muted-foreground ${tx.tag}`}>
+              {post.links.length - 2 > 1
+                ? dict.postCard.moreLinks.replace(
+                    "{n}",
+                    String(post.links.length - 2),
+                  )
+                : pc.moreLink}
             </span>
           )}
         </div>
@@ -95,26 +109,27 @@ export function PostCard({
               e.stopPropagation();
               onTagClick(tag);
             }}
-            className="glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/10"
+            className={`glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-0.5 font-medium text-primary transition-colors hover:bg-primary/10 ${tx.tag}`}
           >
             <Hash className="size-3" />
             {tag}
           </button>
         ))}
         {post.tags.length > 6 && (
-          <span className="px-1 text-[11px] font-medium text-muted-foreground">
+          <span className={`px-1 font-medium text-muted-foreground ${tx.tag}`}>
             +{post.tags.length - 6}
           </span>
         )}
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-muted-foreground">
+        <span className={`inline-flex items-center gap-1.5 font-mono font-medium text-muted-foreground ${tx.tag}`}>
           <Send className="size-3.5 text-primary/70" />
-          {post.source !== "web" ? "via Telegram" : "added manually"}
+          {post.source !== "web" ? pc.viaTelegram : pc.addedManually}
         </span>
         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary/80 opacity-0 transition-opacity group-hover:opacity-100">
-          Open post <ChevronRight className="size-3.5" />
+          <ChevronRight className="size-3.5 rtl:rotate-180" />
+          {pc.openPost}
         </span>
       </div>
     </div>

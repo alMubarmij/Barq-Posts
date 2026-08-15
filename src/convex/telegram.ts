@@ -155,7 +155,7 @@ export const handleUpdate = httpAction(async (ctx, request) => {
   if (!text) {
     await telegramApi(token, "sendMessage", {
       chat_id: chatId,
-      text: "Send me a message or a link and I'll publish it to your personal archive. Add #tags like #design to classify it.",
+      text: "Send me a message or a link and I'll publish it to your personal archive. Add #tags like #design to classify it.\nأرسل لي رسالة أو رابطًا وسأنشره في أرشيفك الشخصي. أضف #وسوم مثل #تصميم لتصنيفه.",
     });
     return json({ ok: true, ignored: "no text" }, 200);
   }
@@ -205,6 +205,7 @@ export const handleUpdate = httpAction(async (ctx, request) => {
   const tagLine = [...tags].map((t) => `#${t}`).join(" ");
   const reply = [
     "✅ Published to your archive",
+    "تم النشر إلى أرشيفك",
     `“${title}”`,
     tagLine ? `Tags: ${tagLine}` : "",
   ]
