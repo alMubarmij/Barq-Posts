@@ -1,6 +1,6 @@
 import { httpRouter } from "convex/server";
 import { auth } from "./auth";
-import { handleUpdate } from "./telegram";
+import { handleUpdate } from "./telegramWebhook";
 
 const http = httpRouter();
 
