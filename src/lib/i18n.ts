@@ -15,6 +15,7 @@ export type PluralForms = {
 
 export const en = {
   brand: {
+    name: "Barq Post",
     tagline: "Barq · Telegram archive",
     home: "Barq home",
   },
@@ -64,8 +65,8 @@ export const en = {
       bullets: ["No dashboard to fill", "Free hosting ready", "Set up in 3 steps"],
       archived: "Archived just now",
       mockupNow: "now",
-      mockupTitle: "Great read on Postgres internals",
-      mockupChip: "#db → 12 posts",
+      mockupTitle: "How speed reading sharpens your thinking",
+      mockupChip: "#reading → 12 posts",
     },
     steps: {
       kicker: "How it works",
@@ -294,6 +295,7 @@ export type Dict = typeof en;
 
 export const ar: Dict = {
   brand: {
+    name: "منشورات برقية",
     tagline: "برق · أرشيف تيليغرام",
     home: "الرئيسية",
   },
@@ -343,8 +345,8 @@ export const ar: Dict = {
       bullets: ["لا لوحات تحكم لملئها", "استضافة مجانية جاهزة", "الإعداد في 3 خطوات"],
       archived: "نُشر للتو",
       mockupNow: "الآن",
-      mockupTitle: "قراءة رائعة عن دواخل Postgres",
-      mockupChip: "12 منشورًا في #db",
+      mockupTitle: "كيف تُحسِّن القراءة السريعة تفكيرك",
+      mockupChip: "12 منشورًا في #reading",
     },
     steps: {
       kicker: "كيف يعمل",

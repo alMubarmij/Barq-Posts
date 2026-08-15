@@ -19,7 +19,7 @@ export function Logo({
       {!iconOnly && (
         <span className="flex flex-col leading-none">
           <span className="font-heading text-[1.05rem] font-bold text-foreground">
-            منشورات برقية
+            {dict.brand.name}
           </span>
           <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
             {dict.brand.tagline}

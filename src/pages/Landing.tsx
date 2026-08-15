@@ -206,8 +206,8 @@ export default function Landing() {
                 </div>
                 <p className="mt-2.5 text-xs leading-5 text-foreground/90">
                   {d.hero.mockupTitle}{" "}
-                  <span className="text-sky-600 dark:text-cyan-300">https://github.com/…</span>{" "}
-                  <span className="font-semibold text-indigo-600 dark:text-sky-300">#dev #db</span>
+                  <span className="text-sky-600 dark:text-cyan-300">https://fs.blog/…</span>{" "}
+                  <span className="font-semibold text-indigo-600 dark:text-sky-300">#reading #thinking</span>
                 </p>
               </motion.div>
 
@@ -222,7 +222,7 @@ export default function Landing() {
                     <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-white">
                       <Link2 className="size-4" />
                     </span>
-                    <span className="font-mono text-[11px]">github.com</span>
+                    <span className="font-mono text-[11px]">fs.blog</span>
                   </span>
                   <Badge variant="secondary" className="glass-chip rounded-full text-[10px]">
                     {d.hero.archived}
@@ -232,10 +232,10 @@ export default function Landing() {
                   {d.hero.mockupTitle}
                 </p>
                 <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
-                  https://github.com/neondatabase/…
+                  https://fs.blog/speed-reading-…
                 </p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
-                  {["dev", "db", "github", "reading"].map((tag) => (
+                  {["reading", "thinking", "speed", "learning"].map((tag) => (
                     <span
                       key={tag}
                       className="glass-chip inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium text-primary"
