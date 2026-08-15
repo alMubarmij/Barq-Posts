@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منشورات برقية · أرشيفك الشخصي عبر تيليغرام</title>
+  <meta name="description" content="أرسل للبوت رابطًا أو ملاحظة أو مقتطفًا مع #وسوم، فيُنشر فورًا في أرشيفك الشخصي المصنَّف والقابل للبحث. مبني على تيليغرام وConvex واستضافة مجانية." />
+
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+
+  <!-- Typography: Cairo for headings & links, Tajawal for body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">تخطَّ إلى المحتوى الرئيسي</a>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="الصفحة الرئيسية لمنشورات برقية">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </span>
+        <span class="brand-text">منشورات برقية</span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+        <a href="#features">المميزات</a>
+        <a href="#how">كيف يعمل</a>
+        <a href="#setup">طريقة الإعداد</a>
+        <a href="#faq">الأسئلة الشائعة</a>
+        <a class="nav-cta" href="#cta">افتح الأرشيف</a>
+      </nav>
+
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="فتح القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="top">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="chip hero-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+            أرشيفك الشخصي عبر تيليغرام
+          </span>
+
+          <h1 class="hero-title">أرسلها مرة واحدة.<br /><span class="gradient-text">واحتفظ بها للأبد.</span></h1>
+
+          <p class="hero-sub">
+            تُحوِّل منشورات برقية تيليغرام إلى أرشيف شخصي. أرسل للبوت رابطًا أو
+            ملاحظة أو مقتطفًا مع #وسوم، فيُنشر فورًا في فهرسك مصنَّفًا وقابلًا
+            للبحث، وهو لك وحدك.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#cta">
+              افتح أرشيفك
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic arrow"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#how">كيف يعمل؟</a>
+          </div>
+
+          <ul class="hero-trust">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 6 9 17l-5-5"/></svg>لا لوحات تحكم لملئها</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 6 9 17l-5-5"/></svg>استضافة مجانية جاهزة</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 6 9 17l-5-5"/></svg>الإعداد في 3 خطوات</li>
+          </ul>
+        </div>
+
+        <!-- Static mockup -->
+        <div class="hero-visual" aria-hidden="true">
+          <div class="mockup">
+            <div class="mock-bubble float-slow">
+              <div class="mock-bubble-head">
+                <span class="mock-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/></svg>
+                </span>
+                <span class="mock-name">Barq bot <em>· الآن</em></span>
+              </div>
+              <p class="mock-msg">
+                قراءة رائعة عن دواخل Postgres
+                <code dir="ltr">https://github.com/…</code>
+                <strong>#dev #db</strong>
+              </p>
+            </div>
+
+            <div class="mock-card float-slower">
+              <div class="mock-card-top">
+                <span class="mock-domain">
+                  <span class="mock-domain-ic">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  </span>
+                  <code dir="ltr">github.com</code>
+                </span>
+                <span class="mock-badge">نُشر للتو</span>
+              </div>
+              <p class="mock-title">قراءة رائعة عن دواخل Postgres</p>
+              <p class="mock-url" dir="ltr">https://github.com/neondatabase/…</p>
+              <div class="mock-tags">
+                <span class="chip tag">#dev</span>
+                <span class="chip tag">#db</span>
+                <span class="chip tag">#github</span>
+                <span class="chip tag">#reading</span>
+              </div>
+            </div>
+
+            <div class="mock-chip float-slow">
+              <span class="mock-check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <code dir="ltr">#db</code>
+              <span>12 منشورًا</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="tag-strip" aria-hidden="true">
+          <span class="chip tag">#dev</span>
+          <span class="chip tag">#reading</span>
+          <span class="chip tag">#ideas</span>
+          <span class="chip tag">#ai</span>
+          <span class="chip tag">#links</span>
+          <span class="chip tag">#postgres</span>
+          <span class="chip tag">#rust</span>
+          <span class="chip tag">#ux</span>
+          <span class="chip tag">#notes</span>
+          <span class="chip tag">#cli</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Stats ===== -->
+    <section class="stats" aria-label="أرقام سريعة">
+      <div class="container stats-grid">
+        <div class="stat">
+          <p class="stat-num">3</p>
+          <p class="stat-label">خطوات من الفكرة إلى الأرشيف</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">فوري</p>
+          <p class="stat-label">نشر دون لوحات تحكم أو نماذج</p>
+        </div>
+        <div class="stat">
+          <p class="stat-num">100%</p>
+          <p class="stat-label">خصوصية، الأرشيف لك وحدك</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Features ===== -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">المميزات</p>
+          <h2 class="section-title">حفظ الإشارات بالشكل الصحيح</h2>
+          <p class="section-lead">قوة التصنيف في del.icio.us وdiigo، أعيد بناؤها لتناسب طريقة حفظك اليوم، داخل تيليغرام.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <h3 class="card-title">حفظ الروابط كإشارات مرجعية</h3>
+            <p class="card-text">كل رابط ترسله يتحول إلى إشارة مرجعية نظيفة مع نطاقها وعنوانها، على طريقة del.icio.us، دون الضجيج العام.</p>
+          </article>
+
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 17 9 5l-5 5 11 11"/><path d="m9 14-3.5 3.5 1.5 1.5 3.5-3.5"/><path d="M13 8l-2-2 2-2 2 2-2 2Z"/></svg>
+            </span>
+            <h3 class="card-title">تصنيف بالوسوم</h3>
+            <p class="card-text">وسومك الصريحة ووسوم النطاق التلقائية تُبقي كل شيء منظمًا بأسلوب diigo. صفِّ بأي وسم بنقرة واحدة.</p>
+          </article>
+
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14Z"/></svg>
+            </span>
+            <h3 class="card-title">نشر فوري</h3>
+            <p class="card-text">لا لوحات تحكم ولا نماذج. رسالة في تيليغرام تعني منشورًا في الأرشيف قبل وصول رسالة التأكيد.</p>
+          </article>
+
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <h3 class="card-title">خصوصية بالتصميم</h3>
+            <p class="card-text">الأرشيف محمي بتسجيل دخولك. لا ملف عام، لا خوارزميات، لا ضجيج، فقط إنترنتك الخاص المعلَّق عليه.</p>
+          </article>
+
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+            <h3 class="card-title">ابحث في كل شيء</h3>
+            <p class="card-text">بحث نصي كامل عبر العناوين والملاحظات والروابط والوسوم، ليكون رابط الأسبوع الماضي على بُعد ثلاث ضغطات.</p>
+          </article>
+
+          <article class="glass-card reveal">
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </span>
+            <h3 class="card-title">انشر من المتصفح</h3>
+            <p class="card-text">لست قرب هاتفك؟ الصق رابطًا أو اكتب ملاحظة مباشرة في التطبيق، تُوسم وتُؤرشف تمامًا كرسالة تيليغرام.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== How it works ===== -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">كيف يعمل</p>
+          <h2 class="section-title">رسالة واحدة. منشور واحد. انتهى.</h2>
+          <p class="section-lead">ثلاث خطوات بين شيء وجدته وشيء ستعثر عليه مجددًا.</p>
+        </div>
+
+        <div class="steps">
+          <article class="glass-card step reveal">
+            <span class="step-num" aria-hidden="true">01</span>
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </span>
+            <h3 class="card-title">راسل البوت</h3>
+            <p class="card-text">افتح المحادثة مع بوتك وأرسل أي شيء: رابطًا يستحق الحفظ، فكرة، مقتطفًا، أو ملاحظة لنفسك.</p>
+          </article>
+
+          <article class="glass-card step reveal">
+            <span class="step-num" aria-hidden="true">02</span>
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 17 9 5l-5 5 11 11"/><path d="m9 14-3.5 3.5 1.5 1.5 3.5-3.5"/><path d="M13 8l-2-2 2-2 2 2-2 2Z"/></svg>
+            </span>
+            <h3 class="card-title">يُصنَّف تلقائيًا</h3>
+            <p class="card-text">تُحفظ الروابط مع نطاقها، وتبقى وسومك كما كتبتها، ويُشتق العنوان تلقائيًا بأسلوب del.icio.us.</p>
+          </article>
+
+          <article class="glass-card step reveal">
+            <span class="step-num" aria-hidden="true">03</span>
+            <span class="card-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            </span>
+            <h3 class="card-title">تصفّح الأرشيف</h3>
+            <p class="card-text">يصل المنشور إلى فهرسك فورًا. ابحث عنه، أو صفِّه بالوسم، أو افتح صفحة تفاصيله متى احتجت إليه.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Setup with code ===== -->
+    <section class="section" id="setup">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">طريقة الإعداد</p>
+          <h2 class="section-title">من صفر إلى أرشيف نشط في دقيقتين</h2>
+          <p class="section-lead">اتبع الخطوات الأربع التالية. الأوامر والرموز مكتوبة بالاتجاه اليساري (LTR) لسهولة النسخ واللصق.</p>
+        </div>
+
+        <div class="setup-steps">
+          <!-- Step 1 -->
+          <article class="setup-step reveal">
+            <div class="setup-head">
+              <span class="setup-index">1</span>
+              <h3 class="setup-title">أنشئ البوت عبر BotFather</h3>
+            </div>
+            <p class="setup-text">
+              افتح محادثة <code dir="ltr">@BotFather</code> في تيليغرام وأرسل الأمر
+              التالي لإنشاء بوت جديد، ثم انسخ الرمز (Token) الذي ستحصل عليه:
+            </p>
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="code-lang" dir="ltr">Telegram / BotFather</span>
+                <button class="copy-btn" type="button" data-copy="/newbot">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span>نسخ</span>
+                </button>
+              </div>
+              <pre dir="ltr" tabindex="0"><code>/newbot</code></pre>
+            </div>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="setup-step reveal">
+            <div class="setup-head">
+              <span class="setup-index">2</span>
+              <h3 class="setup-title">أضف الرمز إلى مفاتيح المشروع</h3>
+            </div>
+            <p class="setup-text">
+              ضع الرمز الذي حصلت عليه من BotFather في مفاتيح المشروع (Environment
+              Keys). أضف أيضًا رمزًا سريًا اختياريًا للويب هوك لمزيد من الأمان:
+            </p>
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="code-lang" dir="ltr">.env</span>
+                <button class="copy-btn" type="button" data-copy="TELEGRAM_BOT_TOKEN=123456789:AAHh_Example-Token-Only&#10;TELEGRAM_WEBHOOK_SECRET=your-secret-optional">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span>نسخ</span>
+                </button>
+              </div>
+              <pre dir="ltr" tabindex="0"><code>TELEGRAM_BOT_TOKEN=123456789:AAHh_Example-Token-Only
+TELEGRAM_WEBHOOK_SECRET=your-secret-optional</code></pre>
+            </div>
+          </article>
+
+          <!-- Step 3 -->
+          <article class="setup-step reveal">
+            <div class="setup-head">
+              <span class="setup-index">3</span>
+              <h3 class="setup-title">سجّل الويب هوك</h3>
+            </div>
+            <p class="setup-text">
+              شغّل الأمر التالي من الطرفية، مع استبدال
+              <code dir="ltr">&lt;TOKEN&gt;</code> برمز البوت و<code dir="ltr">&lt;URL&gt;</code> برابط مشروعك:
+            </p>
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="code-lang" dir="ltr">Terminal</span>
+                <button class="copy-btn" type="button" data-copy="curl -X POST &quot;https://api.telegram.org/bot&lt;TOKEN&gt;/setWebhook&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;url&quot;:&quot;https://&lt;your-site&gt;.convex.site/api/telegram/webhook&quot;,&quot;allowed_updates&quot;:[&quot;message&quot;]}'">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span>نسخ</span>
+                </button>
+              </div>
+              <pre dir="ltr" tabindex="0"><code>curl -X POST "https://api.telegram.org/bot&lt;TOKEN&gt;/setWebhook" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://&lt;your-site&gt;.convex.site/api/telegram/webhook","allowed_updates":["message"]}'</code></pre>
+            </div>
+            <p class="setup-text">
+              بمجرد التسجيل، أرسل أي رسالة أو رابط إلى بوتك، وسيُنشر في أرشيفك
+              فورًا مع رسالة تأكيد بالعربية.
+            </p>
+          </article>
+
+          <!-- Step 4 -->
+          <article class="setup-step reveal">
+            <div class="setup-head">
+              <span class="setup-index">4</span>
+              <h3 class="setup-title">انشر على استضافة مجانية</h3>
+            </div>
+            <p class="setup-text">
+              الموقع يعمل على أي استضافة ساكنة مجانية. اختر المنصة التي تناسبك:
+            </p>
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="code-lang" dir="ltr">Terminal</span>
+                <button class="copy-btn" type="button" data-copy="npx vercel deploy --prod">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span>نسخ</span>
+                </button>
+              </div>
+              <pre dir="ltr" tabindex="0"><code>npx vercel deploy --prod</code></pre>
+            </div>
+            <p class="setup-text">
+              أو اربط المستودع مباشرة بـ
+              <code dir="ltr">Netlify</code> أو
+              <code dir="ltr">Cloudflare Pages</code>، لا حاجة إلى خادم مدفوع،
+              وستنشر التحديثات تلقائيًا عند كل دفعة.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="section" id="faq">
+      <div class="container container-narrow">
+        <div class="section-head reveal">
+          <p class="kicker">الأسئلة الشائعة</p>
+          <h2 class="section-title">كل ما تريد معرفته</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item reveal" open>
+            <summary>
+              <span>هل أرشيفي خاص فعلًا؟</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic chevron"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p>
+              نعم، الأرشيف محمي بتسجيل دخولك بالكامل. لا ملف عام ولا خوارزميات
+              ولا ضجيج، فقط محتواك أنت بعيدًا عن أي أعين أخرى.
+            </p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>هل يمكنني النشر من المتصفح بدل تيليغرام؟</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic chevron"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p>
+              بالتأكيد. من زر «منشور جديد» يمكنك لصق رابط أو كتابة ملاحظة مباشرة،
+              وستُوسم وتُؤرشف بالطريقة نفسها التي تعمل بها رسائل تيليغرام، مع
+              إضافة وسم النطاق تلقائيًا.
+            </p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>كيف تعمل الوسوم تلقائيًا؟</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic chevron"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p>
+              الوسوم التي تكتبها بعلامة # تُحفظ كما هي، ويُضاف إليها تلقائيًا وسم
+              النطاق لكل رابط، مثل <code dir="ltr">github</code> أو
+              <code dir="ltr">postgres</code>، فتتشكل سحابة وسوم حيّة تتيح
+              تصفية أرشيفك بالكامل بنقرة واحدة.
+            </p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>
+              <span>هل أحتاج إلى استضافة مدفوعة؟</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic chevron"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p>
+              لا، الباقات المجانية تكفي تمامًا: استضافة ساكنة من
+              <code dir="ltr">Vercel</code> أو <code dir="ltr">Netlify</code> أو
+              <code dir="ltr">Cloudflare Pages</code>، وقاعدة بيانات من
+              <code dir="ltr">Convex</code> بباقة مجانية سخية.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-glow" aria-hidden="true"></div>
+          <span class="chip cta-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14Z"/></svg>
+            باقة مجانية للأبد
+          </span>
+          <h2 class="cta-title">رابطك المفيد التالي على بُعد <span class="gradient-text">رسالة واحدة</span></h2>
+          <p class="cta-text">
+            أنشئ بوتًا في دقيقتين، ضع الرمز، وابدأ النشر. كل رسالة ترسلها لنفسك
+            إشارة مرجعية ستجدها لاحقًا.
+          </p>
+          <div class="cta-actions">
+            <a class="btn btn-primary btn-lg" href="#setup">
+              ابدأ الآن
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic arrow"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#faq">تعرف على المزيد</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top" aria-label="الصفحة الرئيسية لمنشورات برقية">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </span>
+          <span class="brand-text">منشورات برقية</span>
+        </a>
+        <p>أرشيف شخصي مصنَّف وقابل للبحث لكل ما تجده وتريد أن تجده لاحقًا.</p>
+      </div>
+
+      <nav class="footer-col" aria-label="روابط الموقع">
+        <h4>الموقع</h4>
+        <a href="#features">المميزات</a>
+        <a href="#how">كيف يعمل</a>
+        <a href="#setup">طريقة الإعداد</a>
+        <a href="#faq">الأسئلة الشائعة</a>
+      </nav>
+
+      <div class="footer-col">
+        <h4>الموارد</h4>
+        <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer">BotFather</a>
+        <a href="https://telegram.org" target="_blank" rel="noopener noreferrer">تيليغرام</a>
+        <a href="https://convex.dev" target="_blank" rel="noopener noreferrer" dir="ltr">Convex</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© <span id="year">2026</span> منشورات برقية، جميع الحقوق محفوظة.</p>
+      <p class="footer-built">مبني على تيليغرام وConvex واستضافة مجانية: Vercel، Netlify، Cloudflare Pages</p>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

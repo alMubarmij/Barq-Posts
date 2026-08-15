@@ -1,0 +1,17 @@
+{
+  "name": "منشورات برقية · أرشيفك عبر تيليغرام",
+  "short_name": "منشورات برقية",
+  "description": "أرسل الروابط والملاحظات إلى بوت تيليغرام الخاص بك، لتُنشر كمنشورات موسومة في أرشيفك الخاص القابل للبحث.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#7cc4f2",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
