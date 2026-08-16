@@ -280,6 +280,22 @@ export function TelegramSetup() {
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
           {ts.afterRegister}
         </p>
+
+        {/* ALLOWED_CHAT_IDS hint */}
+        <div className="mt-4 flex items-start gap-2.5 rounded-2xl bg-background/60 p-3.5">
+          <KeyRound className="mt-0.5 size-4 shrink-0 text-primary" />
+          <p className="text-xs leading-5 text-muted-foreground">
+            {fmt(ts.allowedHint, { code: "ALLOWED_CHAT_IDS" }).split(
+              "ALLOWED_CHAT_IDS",
+            )[0]}
+            <code className="rounded bg-accent/70 px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+              ALLOWED_CHAT_IDS
+            </code>
+            {fmt(ts.allowedHint, { code: "ALLOWED_CHAT_IDS" }).split(
+              "ALLOWED_CHAT_IDS",
+            )[1]}
+          </p>
+        </div>
       </div>
     </div>
   );

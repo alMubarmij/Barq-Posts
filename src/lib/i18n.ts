@@ -300,6 +300,8 @@ export const en = {
     toastFailed: "Could not register webhook",
     copyWebhookUrl: "Copy webhook URL",
     couldNotReach: "Could not reach the bot",
+    allowedHint:
+      "Optional: add {code} to the project keys to allow only specific Telegram user IDs (comma or space separated, e.g. 123456789, 987654321). Get your ID from @userinfobot — everyone else gets ignored.",
   },
   notFound: {
     title: "Page not found",
@@ -609,6 +611,8 @@ export const ar: Dict = {
     toastFailed: "تعذّر تسجيل الويب هوك",
     copyWebhookUrl: "نسخ رابط الويب هوك",
     couldNotReach: "تعذّر الوصول إلى البوت",
+    allowedHint:
+      "اختياري: أضف {code} إلى مفاتيح المشروع للسماح بأرقام مستخدمين محددة فقط في تيليغرام (مفصولة بفواصل أو مسافات، مثل 123456789, 987654321). احصل على رقمك من @userinfobot، وسيُتجاهل أي شخص آخر.",
   },
   notFound: {
     title: "الصفحة غير موجودة",

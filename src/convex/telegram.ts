@@ -27,6 +27,25 @@ function botToken(): string | undefined {
   return process.env[BOT_TOKEN_ENV];
 }
 
+/**
+ * ALLOWED_CHAT_IDS — optional comma- or space-separated list of Telegram
+ * user / chat IDs that are allowed to publish. A message is accepted when
+ * either the sender's user ID or the chat ID appears in the list (in private
+ * chats they're the same number; in groups, list your user ID to allow only
+ * yourself, or list the group ID to allow the whole group).
+ * Returns null when the variable is not configured (everyone allowed).
+ */
+function allowedChatIds(): Set<number> | null {
+  const raw = process.env.ALLOWED_CHAT_IDS;
+  if (!raw || !raw.trim()) return null;
+  const ids = new Set<number>();
+  for (const part of raw.split(/[\s,]+/)) {
+    const id = Number(part);
+    if (Number.isFinite(id) && id !== 0) ids.add(id);
+  }
+  return ids.size > 0 ? ids : null;
+}
+
 function siteUrl(): string {
   const site = process.env.CONVEX_SITE_URL;
   if (site) return site.replace(/\/+$/, "");
@@ -291,6 +310,21 @@ export const processUpdate = internalAction({
     if (isBot) {
       // Never archive (or echo) messages sent by other bots.
       return { status: 200, body: { ok: true, ignored: "bot message" } };
+    }
+
+    // Restrict publishing to the configured Telegram user / chat IDs.
+    const allowed = allowedChatIds();
+    if (allowed) {
+      const senderId = typeof from.id === "number" ? from.id : 0;
+      if (!allowed.has(senderId) && !allowed.has(chatId)) {
+        if (!inGroup) {
+          await telegramApi(token, "sendMessage", {
+            chat_id: chatId,
+            text: "⛔ هذا البوت مخصص لمستخدمين محددين فقط، ولا يمكنك النشر هنا.",
+          });
+        }
+        return { status: 200, body: { ok: true, ignored: "not allowed" } };
+      }
     }
 
     // Commands (/help, /list, /get, /edit, /delete) work in private chats and
