@@ -9,28 +9,44 @@ import {
   useI18n,
 } from "@/components/Settings";
 import { TelegramSetup } from "@/components/TelegramSetup";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth";
-import { arPlural, plural } from "@/lib/i18n";
-import { useQuery } from "convex/react";
+import { arPlural, fmt, plural } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+import { useMutation, useQuery } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Archive,
-  Hash,
+  ExternalLink,
+  Globe,
   Inbox,
+  Link2,
   Loader2,
   LogOut,
   Plus,
   Search,
   Send,
   Tags,
+  Trash2,
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 type View = "feed" | "tags" | "telegram";
 type TypeFilter = "all" | "link" | "message";
@@ -49,6 +65,27 @@ export default function Dashboard() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [search, setSearch] = useState("");
   const [composerOpen, setComposerOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<Doc<"posts"> | null>(null);
+  const [deletingPost, setDeletingPost] = useState<Doc<"posts"> | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const deletePost = useMutation(api.posts.remove);
+
+  const confirmDelete = async () => {
+    if (!deletingPost) return;
+    setDeleting(true);
+    try {
+      await deletePost({ id: deletingPost._id });
+      toast(dict.common.deleted);
+      setDeletingPost(null);
+    } catch (err) {
+      toast.error(dict.common.deleteFailed, {
+        description:
+          err instanceof Error ? err.message : dict.common.unknownError,
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
     { id: "feed", label: dict.nav.archive, icon: Archive },
@@ -178,6 +215,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-auto space-y-3">
+            <PublicToggle />
             <div className="glass-chip flex items-center gap-2.5 rounded-2xl p-2.5">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 text-xs font-bold text-white">
                 {initials}
@@ -253,6 +291,9 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
+            <div className="mt-2">
+              <PublicToggle />
+            </div>
           </div>
 
           <main className="mx-auto w-full max-w-4xl pb-16">
@@ -282,6 +323,11 @@ export default function Dashboard() {
                     onClearFilters={clearFilters}
                     onNewPost={() => setComposerOpen(true)}
                     onGoToTelegram={() => setView("telegram")}
+                    onEditPost={(post) => {
+                      setEditingPost(post);
+                      setComposerOpen(true);
+                    }}
+                    onDeletePost={setDeletingPost}
                   />
                 )}
                 {view === "tags" && (
@@ -309,7 +355,143 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <PostComposer open={composerOpen} onOpenChange={setComposerOpen} />
+      <PostComposer
+        open={composerOpen}
+        onOpenChange={(o) => {
+          setComposerOpen(o);
+          if (!o) setEditingPost(null);
+        }}
+        editing={editingPost}
+      />
+
+      {/* Delete confirmation */}
+      <AlertDialog
+        open={deletingPost !== null}
+        onOpenChange={(o) => {
+          if (!o && !deleting) setDeletingPost(null);
+        }}
+      >
+        <AlertDialogContent className="glass-strong rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{dict.common.deleteTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {dict.common.deleteText}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="glass-chip cursor-pointer rounded-xl"
+              disabled={deleting}
+            >
+              {dict.common.cancel}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                void confirmDelete();
+              }}
+              disabled={deleting}
+              className="cursor-pointer rounded-xl bg-red-500 hover:bg-red-600"
+            >
+              {deleting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <>
+                  <Trash2 className="size-4" />
+                  {dict.common.delete}
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+
+/** Public archive toggle — appears in the sidebar and the mobile top bar. */
+function PublicToggle() {
+  const { dict } = useI18n();
+  const { user } = useAuth();
+  const setPublicProfile = useMutation(api.users.setPublicProfile);
+  const [busy, setBusy] = useState(false);
+  const isOn = user?.publicProfile === true;
+
+  const toggle = async (on: boolean) => {
+    setBusy(true);
+    try {
+      await setPublicProfile({ publicProfile: on });
+      toast(on ? dict.common.publicProfile : dict.common.privateArchive);
+    } catch {
+      toast.error(dict.common.unknownError);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const copyLink = async () => {
+    const url = `${window.location.origin}/public`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast(
+        fmt(dict.common.copiedToClipboard, {
+          what: dict.common.copyPublicLink,
+        }),
+      );
+    } catch {
+      toast(dict.common.copyFailed);
+    }
+  };
+
+  return (
+    <div className="glass-chip rounded-2xl p-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-primary">
+            <Globe className="size-4" />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-xs font-bold text-foreground">
+              {dict.common.publicProfile}
+            </p>
+            <p className="truncate text-[10px] leading-4 text-muted-foreground">
+              {dict.common.publicHint}
+            </p>
+          </div>
+        </div>
+        <Switch
+          checked={isOn}
+          onCheckedChange={(v) => void toggle(v)}
+          disabled={busy}
+          aria-label={dict.common.publicProfile}
+          className={cn("shrink-0", busy && "opacity-60")}
+        />
+      </div>
+      {isOn && (
+        <div className="mt-2 flex items-center gap-1.5 border-t border-border/60 pt-2">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 flex-1 cursor-pointer rounded-lg text-[11px]"
+            onClick={copyLink}
+          >
+            <Link2 className="size-3" />
+            {dict.common.copyPublicLink}
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-7 flex-1 cursor-pointer rounded-lg text-[11px]"
+          >
+            <Link to="/public" target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="size-3" />
+              {dict.common.viewPublic}
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
@@ -340,6 +522,8 @@ function FeedView({
   onClearFilters,
   onNewPost,
   onGoToTelegram,
+  onEditPost,
+  onDeletePost,
 }: {
   posts: Doc<"posts">[];
   allCount: number;
@@ -357,6 +541,8 @@ function FeedView({
   onClearFilters: () => void;
   onNewPost: () => void;
   onGoToTelegram: () => void;
+  onEditPost: (post: Doc<"posts">) => void;
+  onDeletePost: (post: Doc<"posts">) => void;
 }) {
   const { dict } = useI18n();
   const dd = dict.dashboard;
@@ -438,7 +624,6 @@ function FeedView({
                     : "glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
                 }
               >
-                <Hash className="size-3" />
                 {tag}
                 <span className="opacity-60">{count}</span>
               </button>
@@ -515,7 +700,12 @@ function FeedView({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: Math.min(i * 0.04, 0.3) }}
             >
-              <PostCard post={post} onTagClick={onTagClick} />
+              <PostCard
+                post={post}
+                onTagClick={onTagClick}
+                onEdit={onEditPost}
+                onDelete={onDeletePost}
+              />
             </motion.div>
           ))}
         </div>
@@ -571,7 +761,6 @@ function TagsView({
               className="glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-3.5 py-1.5 font-semibold text-primary transition-all hover:bg-primary/10"
               title={`${count}`}
             >
-              <Hash className="size-3.5" />
               {tag}
               <span className="text-[10px] font-bold opacity-50">{count}</span>
             </motion.button>

@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Bookmark,
-  Hash,
   Link2,
   PenLine,
   Search,
@@ -49,7 +48,7 @@ export default function Landing() {
   const d = dict.landing;
 
   const stepIcons = [Send, Tags, Bookmark];
-  const featureIcons = [Link2, Hash, Zap, ShieldCheck, Search, PenLine];
+  const featureIcons = [Link2, Tags, Zap, ShieldCheck, Search, PenLine];
 
   return (
     <div className="relative min-h-screen overflow-x-clip">
@@ -62,7 +61,7 @@ export default function Landing() {
         transition={{ duration: 0.5 }}
         className="sticky top-4 z-40 mx-auto mt-4 w-[min(100%-2rem,72rem)]"
       >
-        <div className="glass-strong flex items-center justify-between gap-3 rounded-2xl px-4 py-2.5 sm:px-5">
+        <div className="glass-strong flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-2xl px-4 py-2.5 sm:px-5">
           <Link to="/" aria-label={dict.brand.home}>
             <Logo />
           </Link>
@@ -81,7 +80,7 @@ export default function Landing() {
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="ms-auto flex items-center gap-2">
             <LanguageToggle />
             <ThemeToggle />
             {isAuthenticated ? (
@@ -113,8 +112,8 @@ export default function Landing() {
 
       <main className="relative">
         {/* Hero */}
-        <section className="mx-auto w-[min(100%-2rem,72rem)] pb-16 pt-20 sm:pt-28">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="mx-auto w-[min(100%-2rem,72rem)] pb-16 pt-16 sm:pt-28">
+          <div className="grid items-center gap-12 sm:gap-14 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
               <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0}>
                 <Badge
@@ -187,13 +186,13 @@ export default function Landing() {
               initial={{ opacity: 0, scale: 0.94, y: 18 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative mx-auto w-full max-w-md"
+              className="relative mx-auto mt-8 w-full max-w-md lg:mt-0"
             >
               {/* Telegram bubble */}
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="glass-panel absolute -top-10 z-10 w-56 rounded-2xl rounded-bs-md p-4 -start-6 sm:-start-12"
+                className="glass-panel absolute -top-8 z-10 w-52 rounded-2xl rounded-bs-md p-4 -start-3 sm:-top-10 sm:w-56 sm:-start-12"
               >
                 <div className="flex items-center gap-2">
                   <span className="flex size-7 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-white">
@@ -240,7 +239,7 @@ export default function Landing() {
                       key={tag}
                       className="glass-chip inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium text-primary"
                     >
-                      <Hash className="size-3" /> {tag}
+                      {tag}
                     </span>
                   ))}
                 </div>
@@ -277,7 +276,7 @@ export default function Landing() {
                 transition={{ delay: 0.7 + i * 0.05 }}
                 className="glass-chip inline-flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
               >
-                <Hash className="size-3" /> {tag}
+                {tag}
               </motion.span>
             ))}
           </motion.div>
@@ -369,7 +368,7 @@ export default function Landing() {
                     }}
                     className="glass-chip inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 font-mono font-semibold text-primary"
                   >
-                    <Hash className="size-3.5" /> {tag}
+                    {tag}
                   </motion.span>
                 ))}
               </div>

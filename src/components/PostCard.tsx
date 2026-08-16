@@ -6,19 +6,26 @@ import { arPlural } from "@/lib/i18n";
 import {
   ChevronRight,
   ExternalLink,
-  Hash,
   Link2,
   MessageSquare,
+  Pencil,
   Send,
+  Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export function PostCard({
   post,
   onTagClick,
+  onEdit,
+  onDelete,
+  readOnly = false,
 }: {
   post: Doc<"posts">;
   onTagClick: (tag: string) => void;
+  onEdit?: (post: Doc<"posts">) => void;
+  onDelete?: (post: Doc<"posts">) => void;
+  readOnly?: boolean;
 }) {
   const navigate = useNavigate();
   const { dict, isAr } = useI18n();
@@ -26,21 +33,25 @@ export function PostCard({
   const pc = dict.postCard;
   const tx = POST_TEXT[textSize].card;
   const isLink = post.type === "link";
+  const actions = onEdit || onDelete;
 
-  const open = () => navigate(`/post/${post._id}`);
+  const open = () => {
+    if (!readOnly) navigate(`/post/${post._id}`);
+  };
 
   return (
     <div
-      role="button"
-      tabIndex={0}
+      role={readOnly ? undefined : "button"}
+      tabIndex={readOnly ? undefined : 0}
       onClick={open}
       onKeyDown={(e) => {
+        if (readOnly) return;
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           open();
         }
       }}
-      className="glass-panel group w-full cursor-pointer rounded-2xl p-5 text-start transition-all duration-200 hover:border-white/90 hover:bg-white/75 dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
+      className="glass-panel group w-full cursor-pointer rounded-2xl p-4 text-start transition-all duration-200 hover:border-white/90 hover:bg-white/75 sm:p-5 dark:hover:border-white/20 dark:hover:bg-white/[0.04]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
@@ -61,12 +72,43 @@ export function PostCard({
             {post.title}
           </h3>
         </div>
-        <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
-          {formatDistanceToNow(post.publishedAt, {
-            addSuffix: true,
-            locale: isAr ? ar : enUS,
-          })}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
+            {formatDistanceToNow(post.publishedAt, {
+              addSuffix: true,
+              locale: isAr ? ar : enUS,
+            })}
+          </span>
+          {actions && (
+            <span
+              className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => onEdit(post)}
+                  aria-label={dict.common.edit}
+                  title={dict.common.edit}
+                  className="cursor-pointer rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  <Pencil className="size-3.5" />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(post)}
+                  aria-label={dict.common.delete}
+                  title={dict.common.delete}
+                  className="cursor-pointer rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-500"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              )}
+            </span>
+          )}
+        </div>
       </div>
 
       {post.text && (
@@ -117,7 +159,6 @@ export function PostCard({
             }}
             className={`glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-0.5 font-medium text-primary transition-colors hover:bg-primary/10 ${tx.tag}`}
           >
-            <Hash className="size-3" />
             {tag}
           </button>
         ))}
@@ -129,14 +170,18 @@ export function PostCard({
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
-        <span className={`inline-flex items-center gap-1.5 font-mono font-medium text-muted-foreground ${tx.tag}`}>
+        <span
+          className={`inline-flex items-center gap-1.5 font-mono font-medium text-muted-foreground ${tx.tag}`}
+        >
           <Send className="size-3.5 text-primary/70" />
           {post.source !== "web" ? pc.viaTelegram : pc.addedManually}
         </span>
-        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary/80 opacity-0 transition-opacity group-hover:opacity-100">
-          <ChevronRight className="size-3.5 rtl:rotate-180" />
-          {pc.openPost}
-        </span>
+        {!readOnly && (
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary/80 opacity-0 transition-opacity group-hover:opacity-100">
+            <ChevronRight className="size-3.5 rtl:rotate-180" />
+            {pc.openPost}
+          </span>
+        )}
       </div>
     </div>
   );

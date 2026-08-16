@@ -21,7 +21,7 @@ export function Logo({
           <span className="font-heading text-[1.05rem] font-bold text-foreground">
             {dict.brand.name}
           </span>
-          <span className="mt-1 font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+          <span className="mt-1 hidden font-mono text-[9px] font-semibold uppercase tracking-[0.22em] text-muted-foreground sm:block">
             {dict.brand.tagline}
           </span>
         </span>

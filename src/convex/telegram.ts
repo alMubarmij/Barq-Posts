@@ -3,7 +3,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
-import { action, internalAction } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
+import { action, internalAction, type ActionCtx } from "./_generated/server";
 
 const BOT_TOKEN_ENV = "TELEGRAM_BOT_TOKEN";
 const WEBHOOK_SECRET_ENV = "TELEGRAM_WEBHOOK_SECRET";
@@ -114,6 +115,125 @@ type TelegramUpdate = {
   message?: Record<string, unknown> | null;
 };
 
+type BotCommand = { name: string; arg: string };
+
+/** Parses "/command@botname arg" style Telegram commands. */
+function parseCommand(text: string): BotCommand | null {
+  const match = text.match(
+    /^\/([A-Za-z][A-Za-z0-9_]*)(?:@[A-Za-z0-9_]+)?(?:\s+([\s\S]*))?$/,
+  );
+  if (!match) return null;
+  return { name: match[1].toLowerCase(), arg: (match[2] ?? "").trim() };
+}
+
+function formatPost(post: Doc<"posts">): string {
+  const lines = [
+    `«${post.title}»`,
+    post.type === "link" ? "🔗 رابط" : "📝 ملاحظة",
+    new Date(post.publishedAt).toLocaleString("ar-EG", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }),
+  ];
+  if (post.links.length > 0) {
+    lines.push("", ...post.links.map((l) => `• ${l.url}`));
+  }
+  if (post.tags.length > 0) {
+    lines.push("", `الوسوم: ${post.tags.map((t) => `#${t}`).join(" ")}`);
+  }
+  return lines.join("\n");
+}
+
+const HELP_TEXT = [
+  "📚 أوامر بوت الأرشيف:",
+  "/list — أحدث المنشورات",
+  "/get 3 — عرض منشور برقمه",
+  "/edit 3 نص جديد — تعديل منشور",
+  "/delete 3 — حذف منشور",
+  "/help — عرض هذه الأوامر",
+  "",
+  "أرسل رابطًا أو ملاحظة مع #وسوم لنشرها في أرشيفك.",
+  "يعمل البوت في المحادثات الخاصة والمجموعات معًا.",
+].join("\n");
+
+async function handleCommand(
+  ctx: ActionCtx,
+  token: string,
+  chatId: number,
+  command: BotCommand,
+): Promise<string | null> {
+  switch (command.name) {
+    case "help":
+    case "start":
+      return HELP_TEXT;
+    case "list": {
+      const posts = await ctx.runQuery(internal.posts.listRecent, { limit: 10 });
+      if (posts.length === 0) {
+        return "📭 أرشيفك فارغ بعد. أرسل رابطًا أو ملاحظة مع #وسوم.";
+      }
+      const lines = posts.map((p, i) => `${i + 1}. ${p.title}`);
+      return ["📚 أحدث المنشورات:", ...lines, "", "/get 3 لعرض التفاصيل."].join(
+        "\n",
+      );
+    }
+    case "get": {
+      const idx = parseInt(command.arg, 10);
+      if (!Number.isInteger(idx) || idx < 1) {
+        return "الاستخدام: /get 3 (رقم المنشور من قائمة /list)";
+      }
+      const posts = await ctx.runQuery(internal.posts.listRecent, { limit: 20 });
+      const post = posts[idx - 1];
+      if (!post) {
+        return `لا يوجد منشور رقم ${idx}. جرّب /list.`;
+      }
+      return formatPost(post);
+    }
+    case "edit": {
+      const [numStr, ...rest] = command.arg.split(/\s+/);
+      const idx = parseInt(numStr ?? "", 10);
+      const newText = rest.join(" ").trim();
+      if (!Number.isInteger(idx) || idx < 1 || !newText) {
+        return "الاستخدام: /edit 3 النص الجديد للمنشور";
+      }
+      const posts = await ctx.runQuery(internal.posts.listRecent, { limit: 20 });
+      const post = posts[idx - 1];
+      if (!post) {
+        return `لا يوجد منشور رقم ${idx}. جرّب /list.`;
+      }
+      const links = extractLinks(newText);
+      const type = links.length > 0 ? "link" : "message";
+      const tags = Array.from(
+        new Set([...extractTags(newText), ...links.map((l) => l.domain)]),
+      );
+      const title = deriveTitle(newText, links, type);
+      await ctx.runMutation(internal.posts.updatePost, {
+        id: post._id,
+        type,
+        title,
+        text: newText,
+        links,
+        tags,
+      });
+      return `✅ حُدّث المنشور رقم ${idx}:\n«${title}»`;
+    }
+    case "delete": {
+      const idx = parseInt(command.arg, 10);
+      if (!Number.isInteger(idx) || idx < 1) {
+        return "الاستخدام: /delete 3 (رقم المنشور من قائمة /list)";
+      }
+      const posts = await ctx.runQuery(internal.posts.listRecent, { limit: 20 });
+      const post = posts[idx - 1];
+      if (!post) {
+        return `لا يوجد منشور رقم ${idx}. جرّب /list.`;
+      }
+      await ctx.runMutation(internal.posts.deletePost, { id: post._id });
+      return `🗑️ حُذف المنشور رقم ${idx}.`;
+    }
+    default:
+      return HELP_TEXT;
+  }
+}
+
 /**
  * Processes a Telegram update: verifies the secret token, parses the message
  * or link + #tags, publishes a post, and replies to the sender with a
@@ -158,14 +278,43 @@ export const processUpdate = internalAction({
     const text = rawText.trim();
     const chat = (message.chat as Record<string, unknown> | undefined) ?? {};
     const chatId = typeof chat.id === "number" ? chat.id : 0;
+    const chatType = typeof chat.type === "string" ? chat.type : "private";
+    const inGroup =
+      chatType === "group" ||
+      chatType === "supergroup" ||
+      chatType === "channel";
     const sourceMessageId =
       typeof message.message_id === "number" ? message.message_id : 0;
+    const from = (message.from as Record<string, unknown> | undefined) ?? {};
+    const isBot = from.is_bot === true;
+
+    if (isBot) {
+      // Never archive (or echo) messages sent by other bots.
+      return { status: 200, body: { ok: true, ignored: "bot message" } };
+    }
+
+    // Commands (/help, /list, /get, /edit, /delete) work in private chats and
+    // in groups alike.
+    const command = text ? parseCommand(text) : null;
+    if (command) {
+      const replyText = await handleCommand(ctx, token, chatId, command);
+      if (replyText) {
+        await telegramApi(token, "sendMessage", {
+          chat_id: chatId,
+          text: replyText,
+          disable_web_page_preview: true,
+        });
+      }
+      return { status: 200, body: { ok: true, command: command.name } };
+    }
 
     if (!text) {
-      await telegramApi(token, "sendMessage", {
-        chat_id: chatId,
-        text: "أرسل لي رابطًا أو ملاحظة، وسأنشرها في أرشيفك الشخصي. أضف #وسوم مثل #تصميم لتصنيفها.",
-      });
+      if (!inGroup) {
+        await telegramApi(token, "sendMessage", {
+          chat_id: chatId,
+          text: "أرسل لي رابطًا أو ملاحظة، وسأنشرها في أرشيفك الشخصي. أضف #وسوم مثل #تصميم لتصنيفها.",
+        });
+      }
       return { status: 200, body: { ok: true, ignored: "no text" } };
     }
 
@@ -178,15 +327,21 @@ export const processUpdate = internalAction({
       return { status: 200, body: { ok: true, ignored: "duplicate" } };
     }
 
+    const explicitTags = extractTags(text);
     const links = extractLinks(text);
+    // In groups, only archive intentional bookmarks (a link or #tags) so
+    // everyday group chat stays out of the archive.
+    if (inGroup && links.length === 0 && explicitTags.length === 0) {
+      return { status: 200, body: { ok: true, ignored: "group chat noise" } };
+    }
+
     const type = links.length > 0 ? "link" : "message";
-    const tags = new Set(extractTags(text));
+    const tags = new Set(explicitTags);
     for (const link of links) {
       tags.add(link.domain);
     }
     const title = deriveTitle(text, links, type);
 
-    const from = (message.from as Record<string, unknown> | undefined) ?? {};
     const author = {
       telegramId: typeof from.id === "number" ? from.id : 0,
       username: typeof from.username === "string" ? from.username : undefined,
@@ -216,6 +371,7 @@ export const processUpdate = internalAction({
       "✅ نُشر إلى أرشيفك",
       `«${title}»`,
       tagLine ? `الوسوم: ${tagLine}` : "",
+      "/help للاطلاع على الأوامر",
     ]
       .filter(Boolean)
       .join("\n");

@@ -92,6 +92,90 @@ export const create = mutation({
   },
 });
 
+/** Edit an existing post — title, text, links and tags. */
+export const update = mutation({
+  args: {
+    id: v.id("posts"),
+    title: v.string(),
+    text: v.string(),
+    links: v.array(
+      v.object({
+        url: v.string(),
+        domain: v.string(),
+      }),
+    ),
+    tags: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Not authenticated");
+    }
+    const existing = await ctx.db.get(args.id);
+    if (!existing) {
+      throw new Error("Post not found");
+    }
+    const text = args.text.trim();
+    const links = args.links.filter((l) => l.url.trim().length > 0);
+    const type = links.length > 0 ? "link" : "message";
+    const title =
+      args.title.trim() ||
+      text.split("\n")[0].slice(0, 140) ||
+      links[0]?.domain ||
+      "منشور بدون عنوان";
+
+    const tags = [...args.tags];
+    for (const link of links) {
+      const domainTag = link.domain.toLowerCase();
+      if (domainTag && !tags.includes(domainTag)) {
+        tags.push(domainTag);
+      }
+    }
+
+    await ctx.db.patch(args.id, {
+      type,
+      title: title.slice(0, 200),
+      text,
+      links,
+      tags,
+    });
+  },
+});
+
+/** Delete a post from the archive. */
+export const remove = mutation({
+  args: { id: v.id("posts") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Not authenticated");
+    }
+    const existing = await ctx.db.get(args.id);
+    if (!existing) {
+      throw new Error("Post not found");
+    }
+    await ctx.db.delete(args.id);
+  },
+});
+
+/**
+ * Public archive feed. Returns `null` while the owner hasn't enabled the
+ * public view (so the public page can distinguish private from empty).
+ */
+export const publicList = query({
+  args: {},
+  handler: async (ctx) => {
+    const owner = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("publicProfile"), true))
+      .first();
+    if (!owner) {
+      return null;
+    }
+    return ctx.db.query("posts").order("desc").collect();
+  },
+});
+
 /**
  * Internal: find an existing post for a Telegram (chat, message) pair so the
  * webhook can deduplicate Telegram's webhook retries.
@@ -144,5 +228,55 @@ export const insertPost = internalMutation({
       source: "telegram",
     });
     return id;
+  },
+});
+
+/** Internal: fetch a single post by id (used by the Telegram bot commands). */
+export const getById = internalQuery({
+  args: { id: v.id("posts") },
+  handler: async (ctx, args) => {
+    return (await ctx.db.get(args.id)) ?? null;
+  },
+});
+
+/** Internal: the most recent N posts, newest first (used by /list /get /edit /delete). */
+export const listRecent = internalQuery({
+  args: { limit: v.number() },
+  handler: async (ctx, args) => {
+    return ctx.db.query("posts").order("desc").take(args.limit);
+  },
+});
+
+/** Internal: update a post from the Telegram bot (/edit). */
+export const updatePost = internalMutation({
+  args: {
+    id: v.id("posts"),
+    type: v.union(v.literal("link"), v.literal("message")),
+    title: v.string(),
+    text: v.string(),
+    links: v.array(
+      v.object({
+        url: v.string(),
+        domain: v.string(),
+      }),
+    ),
+    tags: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      type: args.type,
+      title: args.title,
+      text: args.text,
+      links: args.links,
+      tags: args.tags,
+    });
+  },
+});
+
+/** Internal: delete a post from the Telegram bot (/delete). */
+export const deletePost = internalMutation({
+  args: { id: v.id("posts") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
   },
 });

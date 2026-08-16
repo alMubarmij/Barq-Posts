@@ -46,6 +46,21 @@ export const en = {
     copyFailed: "Could not copy — clipboard blocked in this browser",
     unknownError: "Unknown error",
     loading: "Loading…",
+    edit: "Edit",
+    delete: "Delete",
+    save: "Save changes",
+    saving: "Saving…",
+    deleteTitle: "Delete this post?",
+    deleteText: "It will be removed from your archive permanently. This can't be undone.",
+    deleted: "Post deleted",
+    deleteFailed: "Could not delete post",
+    updated: "Post updated",
+    updateFailed: "Could not update post",
+    publicProfile: "Public archive",
+    publicHint: "Anyone with the link can browse your archive",
+    copyPublicLink: "Copy public link",
+    viewPublic: "View public page",
+    privateArchive: "Archive is private",
   },
   nav: {
     how: "How it works",
@@ -66,7 +81,7 @@ export const en = {
       archived: "Archived just now",
       mockupNow: "now",
       mockupTitle: "How speed reading sharpens your thinking",
-      mockupChip: "#reading → 12 posts",
+      mockupChip: "reading → 12 posts",
     },
     steps: {
       kicker: "How it works",
@@ -238,6 +253,8 @@ export const en = {
     toastNote: "Note archived",
     toastFailed: "Could not publish post",
     toastAddContent: "Add a note or a link to publish",
+    titleEdit: "Edit post",
+    editDescription: "Update the title, text, links or tags — the post keeps its place in the archive.",
   },
   telegramSetup: {
     connectionStatus: "Connection status",
@@ -289,6 +306,18 @@ export const en = {
     text: "This link didn't land in your archive. Head back to the catalog.",
     back: "Back to the archive",
   },
+  public: {
+    badge: "Public archive",
+    title: "Browse the public archive",
+    subtitle: "Shared from منشورات برقية — a Telegram-powered personal archive.",
+    privateTitle: "This archive is private",
+    privateText:
+      "The owner hasn't enabled the public view. Sign in to manage your own archive.",
+    emptyTitle: "The archive is empty",
+    emptyText: "Nothing has been published yet.",
+    ownerCta: "Own this archive? Sign in to publish and manage it.",
+    footer: "Built with منشورات برقية",
+  },
 };
 
 export type Dict = typeof en;
@@ -326,6 +355,21 @@ export const ar: Dict = {
     copyFailed: "تعذّر النسخ: الحافظة محجوبة في هذا المتصفح",
     unknownError: "خطأ غير متوقع، حاول مرة أخرى",
     loading: "جارٍ التحميل…",
+    edit: "تعديل",
+    delete: "حذف",
+    save: "حفظ التغييرات",
+    saving: "جارٍ الحفظ…",
+    deleteTitle: "حذف هذا المنشور؟",
+    deleteText: "سيُحذف المنشور نهائيًا من أرشيفك، ولا يمكن التراجع.",
+    deleted: "حُذف المنشور",
+    deleteFailed: "تعذّر حذف المنشور",
+    updated: "حُدّث المنشور",
+    updateFailed: "تعذّر تحديث المنشور",
+    publicProfile: "الأرشيف العام",
+    publicHint: "يمكن لأي شخص يملك الرابط تصفّح أرشيفك",
+    copyPublicLink: "نسخ الرابط العام",
+    viewPublic: "عرض الصفحة العامة",
+    privateArchive: "الأرشيف خاص حاليًا",
   },
   nav: {
     how: "كيف يعمل",
@@ -346,7 +390,7 @@ export const ar: Dict = {
       archived: "نُشر للتو",
       mockupNow: "الآن",
       mockupTitle: "كيف تُحسِّن القراءة السريعة تفكيرك",
-      mockupChip: "12 منشورًا في #reading",
+      mockupChip: "12 منشورًا في reading",
     },
     steps: {
       kicker: "كيف يعمل",
@@ -518,6 +562,8 @@ export const ar: Dict = {
     toastNote: "حُفظت الملاحظة في أرشيفك",
     toastFailed: "تعذّر نشر المنشور",
     toastAddContent: "أضف ملاحظة أو رابطًا للنشر",
+    titleEdit: "تعديل المنشور",
+    editDescription: "حدِّث العنوان أو النص أو الروابط أو الوسوم، ويبقى المنشور في مكانه داخل الأرشيف.",
   },
   telegramSetup: {
     connectionStatus: "حالة الاتصال",
@@ -568,6 +614,18 @@ export const ar: Dict = {
     title: "الصفحة غير موجودة",
     text: "هذا الرابط لم يصل إلى أرشيفك. عد إلى الفهرس.",
     back: "العودة إلى الأرشيف",
+  },
+  public: {
+    badge: "أرشيف عام",
+    title: "تصفّح الأرشيف العام",
+    subtitle: "مُشارَك من منشورات برقية — أرشيف شخصي مدعوم بتيليغرام.",
+    privateTitle: "هذا الأرشيف خاص",
+    privateText:
+      "لم يُفعِّل المالك العرض العام بعد. سجّل الدخول لإدارة أرشيفك الخاص.",
+    emptyTitle: "الأرشيف فارغ",
+    emptyText: "لم يُنشر أي شيء بعد.",
+    ownerCta: "هذا أرشيفك؟ سجّل الدخول للنشر والإدارة.",
+    footer: "مبني بواسطة منشورات برقية",
   },
 };
 

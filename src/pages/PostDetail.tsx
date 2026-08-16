@@ -1,5 +1,6 @@
 import { BackgroundFX } from "@/components/BackgroundFX";
 import { Logo } from "@/components/Logo";
+import { PostComposer } from "@/components/PostComposer";
 import {
   LanguageToggle,
   POST_TEXT,
@@ -8,12 +9,22 @@ import {
   useI18n,
   useTextSize,
 } from "@/components/Settings";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@/hooks/use-auth";
 import { fmt } from "@/lib/i18n";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { motion } from "framer-motion";
@@ -21,16 +32,18 @@ import {
   ArrowLeft,
   Copy,
   ExternalLink,
-  Hash,
   Link2,
   Loader2,
   LogOut,
   MessageSquare,
+  Pencil,
   Send,
   Terminal,
+  Trash2,
 } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
@@ -44,9 +57,34 @@ export default function PostDetail() {
     id ? { id: id as Id<"posts"> } : "skip",
   );
 
+  const [editingOpen, setEditingOpen] = useState(false);
+  const [deletingPost, setDeletingPost] = useState<{
+    _id: Id<"posts">;
+    title: string;
+  } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const deletePost = useMutation(api.posts.remove);
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingPost) return;
+    setDeleting(true);
+    try {
+      await deletePost({ id: deletingPost._id });
+      toast(dict.common.deleted);
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error(dict.common.deleteFailed, {
+        description:
+          err instanceof Error ? err.message : dict.common.unknownError,
+      });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const copyText = async (text: string, what: string) => {
@@ -64,11 +102,11 @@ export default function PostDetail() {
 
       {/* Top bar */}
       <header className="sticky top-3 z-40 mx-auto mt-4 w-[min(100%-1.25rem,72rem)]">
-        <div className="glass-strong flex items-center justify-between gap-3 rounded-2xl px-4 py-2.5 sm:px-5">
+        <div className="glass-strong flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-2xl px-4 py-2.5 sm:px-5">
           <Link to="/" aria-label={dict.brand.home}>
             <Logo />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="ms-auto flex items-center gap-2">
             <LanguageToggle />
             <ThemeToggle />
             <Button
@@ -236,7 +274,6 @@ export default function PostDetail() {
                       to={`/dashboard?tag=${encodeURIComponent(tag)}`}
                       className="glass-chip inline-flex cursor-pointer items-center gap-1 rounded-full px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
                     >
-                      <Hash className="size-3" />
                       {tag}
                     </Link>
                   ))}
@@ -287,10 +324,80 @@ export default function PostDetail() {
                   </Button>
                 </>
               )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="glass-chip cursor-pointer rounded-xl"
+                onClick={() => setEditingOpen(true)}
+              >
+                <Pencil className="size-3.5" />
+                {dict.common.edit}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="glass-chip cursor-pointer rounded-xl text-red-500 hover:text-red-500"
+                onClick={() =>
+                  setDeletingPost({ _id: post._id, title: post.title })
+                }
+              >
+                <Trash2 className="size-3.5" />
+                {dict.common.delete}
+              </Button>
             </div>
           </motion.article>
         )}
       </main>
+
+      <PostComposer
+        open={editingOpen}
+        onOpenChange={setEditingOpen}
+        editing={post}
+      />
+
+      {/* Delete confirmation */}
+      <AlertDialog
+        open={deletingPost !== null}
+        onOpenChange={(o) => {
+          if (!o && !deleting) setDeletingPost(null);
+        }}
+      >
+        <AlertDialogContent className="glass-strong rounded-3xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{dict.common.deleteTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {dict.common.deleteText}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="glass-chip cursor-pointer rounded-xl"
+              disabled={deleting}
+            >
+              {dict.common.cancel}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                void confirmDelete();
+              }}
+              disabled={deleting}
+              className="cursor-pointer rounded-xl bg-red-500 hover:bg-red-600"
+            >
+              {deleting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <>
+                  <Trash2 className="size-4" />
+                  {dict.common.delete}
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

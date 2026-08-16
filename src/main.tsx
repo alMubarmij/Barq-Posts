@@ -15,6 +15,7 @@ const Landing = lazy(() => import("./pages/Landing.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const PostDetail = lazy(() => import("./pages/PostDetail.tsx"));
+const PublicPage = lazy(() => import("./pages/PublicPage.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
@@ -144,6 +145,7 @@ createRoot(document.getElementById("root")!).render(
                   </RequireAuth>
                 }
               />
+              <Route path="/public" element={<PublicPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
