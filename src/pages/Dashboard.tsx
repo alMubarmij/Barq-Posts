@@ -28,6 +28,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { arPlural, fmt, plural } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "convex/react";
+import { format } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Archive,
@@ -37,9 +39,11 @@ import {
   Link2,
   Loader2,
   LogOut,
+  Pencil,
   Plus,
   Search,
   Send,
+  Settings2,
   Tags,
   Trash2,
   X,
@@ -48,7 +52,16 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
-type View = "feed" | "tags" | "telegram";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+type View = "feed" | "tags" | "manage" | "telegram";
 type TypeFilter = "all" | "link" | "message";
 
 export default function Dashboard() {
@@ -90,6 +103,7 @@ export default function Dashboard() {
   const NAV: { id: View; label: string; icon: typeof Inbox }[] = [
     { id: "feed", label: dict.nav.archive, icon: Archive },
     { id: "tags", label: dict.nav.tags, icon: Tags },
+    { id: "manage", label: dict.nav.manage, icon: Settings2 },
     { id: "telegram", label: dict.nav.telegram, icon: Send },
   ];
 
@@ -338,6 +352,18 @@ export default function Dashboard() {
                       setTagFilter(tag);
                       setView("feed");
                     }}
+                  />
+                )}
+                {view === "manage" && (
+                  <ManageView
+                    posts={posts ?? []}
+                    loading={posts === undefined}
+                    onNewPost={() => setComposerOpen(true)}
+                    onEditPost={(post) => {
+                      setEditingPost(post);
+                      setComposerOpen(true);
+                    }}
+                    onDeletePost={setDeletingPost}
                   />
                 )}
                 {view === "telegram" && (
@@ -768,5 +794,326 @@ function TagsView({
         </div>
       )}
     </div>
+  );
+}
+
+function ManageView({
+  posts,
+  loading,
+  onNewPost,
+  onEditPost,
+  onDeletePost,
+}: {
+  posts: Doc<"posts">[];
+  loading: boolean;
+  onNewPost: () => void;
+  onEditPost: (post: Doc<"posts">) => void;
+  onDeletePost: (post: Doc<"posts">) => void;
+}) {
+  const { dict, isAr } = useI18n();
+  const navigate = useNavigate();
+  const dd = dict.dashboard;
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return posts;
+    return posts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.text.toLowerCase().includes(q) ||
+        p.tags.some((t) => t.includes(q)) ||
+        p.links.some(
+          (l) =>
+            l.url.toLowerCase().includes(q) ||
+            l.domain.toLowerCase().includes(q),
+        ),
+    );
+  }, [posts, search]);
+
+  const fmtDate = (ts: number) =>
+    format(ts, isAr ? "d MMM yyyy" : "MMM d, yyyy", {
+      locale: isAr ? ar : enUS,
+    });
+
+  return (
+    <div>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold sm:text-3xl">{dd.manageTitle}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {dd.manageSubtitle}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute start-3 top-2.5 size-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={dict.common.searchPlaceholder}
+              className="glass-chip rounded-xl ps-9"
+            />
+          </div>
+          <Button
+            type="button"
+            className="cursor-pointer rounded-xl"
+            onClick={onNewPost}
+          >
+            <Plus className="size-4" />
+            {dict.common.newPost}
+          </Button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="glass-panel flex items-center justify-center gap-2 rounded-3xl py-20 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          {dd.loading}
+        </div>
+      ) : filtered.length === 0 && posts.length > 0 ? (
+        <div className="glass-panel rounded-3xl px-6 py-16 text-center">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-accent text-primary">
+            <Search className="size-6" />
+          </span>
+          <h3 className="mt-5 text-lg font-bold">{dd.emptyNoMatch}</h3>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+            {dd.emptyNoMatchText}
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-6 glass-chip cursor-pointer rounded-xl"
+            onClick={() => setSearch("")
+            }
+          >
+            <X className="size-4" />
+            {dict.common.clearFilters}
+          </Button>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="glass-panel rounded-3xl px-6 py-16 text-center">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-accent text-primary">
+            <Settings2 className="size-6" />
+          </span>
+          <h3 className="mt-5 text-lg font-bold">{dd.manageEmpty}</h3>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+            {dd.manageEmptyText}
+          </p>
+          <Button
+            type="button"
+            className="mt-6 cursor-pointer rounded-xl"
+            onClick={onNewPost}
+          >
+            <Plus className="size-4" />
+            {dict.common.newPost}
+          </Button>
+        </div>
+      ) : (
+        <>
+          {/* Desktop: table */}
+          <div className="glass-panel hidden rounded-3xl p-3 md:block">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[720px]">
+                <TableHeader>
+                  <TableRow className="border-border/60 hover:bg-transparent">
+                    <TableHead className="px-3">{dd.manageCol.post}</TableHead>
+                    <TableHead>{dd.manageCol.type}</TableHead>
+                    <TableHead>{dd.manageCol.tags}</TableHead>
+                    <TableHead>{dd.manageCol.date}</TableHead>
+                    <TableHead>{dd.manageCol.source}</TableHead>
+                    <TableHead className="text-end">
+                      {dd.manageCol.actions}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((post) => (
+                    <TableRow
+                      key={post._id}
+                      className="cursor-pointer border-border/60"
+                      onClick={() => navigate(`/post/${post._id}`)}
+                    >
+                      <TableCell className="max-w-[300px] px-3">
+                        <p className="truncate font-semibold text-foreground">
+                          {post.title}
+                        </p>
+                        {post.text && (
+                          <p className="truncate text-xs text-muted-foreground">
+                            {post.text}
+                          </p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <TypeBadge type={post.type} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex max-w-[220px] flex-wrap gap-1">
+                          {post.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="glass-chip inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[11px] font-medium text-primary"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {post.tags.length > 3 && (
+                            <span className="px-0.5 text-[11px] text-muted-foreground">
+                              +{post.tags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                        {fmtDate(post.publishedAt)}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {post.source !== "web"
+                          ? dict.postCard.viaTelegram
+                          : dict.postCard.addedManually}
+                      </TableCell>
+                      <TableCell className="text-end">
+                        <ManageActions
+                          post={post}
+                          onEdit={onEditPost}
+                          onDelete={onDeletePost}
+                          onOpen={() => navigate(`/post/${post._id}`)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Mobile: stacked cards */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {filtered.map((post) => (
+              <div key={post._id} className="glass-panel rounded-2xl p-4">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/post/${post._id}`)}
+                  className="w-full cursor-pointer text-start"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <TypeBadge type={post.type} />
+                    <span className="shrink-0 text-[11px] text-muted-foreground">
+                      {fmtDate(post.publishedAt)}
+                    </span>
+                  </div>
+                  <p className="mt-2 truncate font-bold text-foreground">
+                    {post.title}
+                  </p>
+                  {post.text && (
+                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                      {post.text}
+                    </p>
+                  )}
+                  {post.tags.length > 0 && (
+                    <div className="mt-2.5 flex flex-wrap gap-1">
+                      {post.tags.slice(0, 4).map((tag) => (
+                        <span
+                          key={tag}
+                          className="glass-chip inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[11px] font-medium text-primary"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {post.tags.length > 4 && (
+                        <span className="px-0.5 text-[11px] text-muted-foreground">
+                          +{post.tags.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </button>
+                <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5">
+                  <span className="text-[11px] text-muted-foreground">
+                    {post.source !== "web"
+                      ? dict.postCard.viaTelegram
+                      : dict.postCard.addedManually}
+                  </span>
+                  <ManageActions
+                    post={post}
+                    onEdit={onEditPost}
+                    onDelete={onDeletePost}
+                    onOpen={() => navigate(`/post/${post._id}`)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function TypeBadge({ type }: { type: "link" | "message" }) {
+  const { dict } = useI18n();
+  const pd = dict.postDetail;
+  return (
+    <span
+      className={
+        type === "link"
+          ? "inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary"
+          : "inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px] font-semibold text-muted-foreground"
+      }
+    >
+      {type === "link" ? (
+        <Link2 className="size-3" />
+      ) : (
+        <Inbox className="size-3" />
+      )}
+      {type === "link" ? pd.linkBookmark : pd.note}
+    </span>
+  );
+}
+
+function ManageActions({
+  post,
+  onEdit,
+  onDelete,
+  onOpen,
+}: {
+  post: Doc<"posts">;
+  onEdit: (post: Doc<"posts">) => void;
+  onDelete: (post: Doc<"posts">) => void;
+  onOpen: (post: Doc<"posts">) => void;
+}) {
+  const { dict } = useI18n();
+  const btn =
+    "cursor-pointer rounded-lg p-2 text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary";
+  return (
+    <span className="inline-flex items-center gap-0.5">
+      <button
+        type="button"
+        onClick={() => onOpen(post)}
+        aria-label={dict.postCard.openPost}
+        title={dict.postCard.openPost}
+        className={btn}
+      >
+        <ExternalLink className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => onEdit(post)}
+        aria-label={dict.common.edit}
+        title={dict.common.edit}
+        className={btn}
+      >
+        <Pencil className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => onDelete(post)}
+        aria-label={dict.common.delete}
+        title={dict.common.delete}
+        className="cursor-pointer rounded-lg p-2 text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-500"
+      >
+        <Trash2 className="size-4" />
+      </button>
+    </span>
   );
 }

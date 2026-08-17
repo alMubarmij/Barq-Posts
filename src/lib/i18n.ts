@@ -67,6 +67,7 @@ export const en = {
     features: "Features",
     tags: "Tags",
     archive: "Archive",
+    manage: "Manage",
     telegram: "Telegram",
   },
   landing: {
@@ -191,6 +192,20 @@ export const en = {
     noTagsTitle: "No tags yet",
     noTagsText:
       "Tags appear here as you publish — use #hashtags in Telegram and links get domain tags automatically.",
+    manageTitle: "Manage archive",
+    manageSubtitle:
+      "Every post in one place — search, open, edit, or delete.",
+    manageEmpty: "Nothing to manage yet",
+    manageEmptyText:
+      "Publish a post from Telegram or the composer and it will appear here.",
+    manageCol: {
+      post: "Post",
+      type: "Type",
+      tags: "Tags",
+      date: "Published",
+      source: "Source",
+      actions: "Actions",
+    },
     telegramSubtitle: "Connect your bot and start publishing from your phone",
     privateOwner: "Private archive owner",
     you: "You",
@@ -378,6 +393,7 @@ export const ar: Dict = {
     features: "المميزات",
     tags: "الوسوم",
     archive: "الأرشيف",
+    manage: "الإدارة",
     telegram: "تيليغرام",
   },
   landing: {
@@ -502,6 +518,19 @@ export const ar: Dict = {
     noTagsTitle: "لا وسوم بعد",
     noTagsText:
       "تظهر الوسوم هنا عند النشر؛ استخدم # في تيليغرام، وستحصل الروابط على وسوم نطاق تلقائيًا.",
+    manageTitle: "إدارة الأرشيف",
+    manageSubtitle: "كل المنشورات في مكان واحد: ابحث، افتح، عدّل، أو احذف.",
+    manageEmpty: "لا شيء لإدارته بعد",
+    manageEmptyText:
+      "انشر منشورًا من تيليغرام أو من نافذة الإنشاء وسيظهر هنا.",
+    manageCol: {
+      post: "المنشور",
+      type: "النوع",
+      tags: "الوسوم",
+      date: "النشر",
+      source: "المصدر",
+      actions: "إجراءات",
+    },
     telegramSubtitle: "اربط بوتك وابدأ النشر من هاتفك",
     privateOwner: "مالك الأرشيف الخاص",
     you: "أنت",
